@@ -2,7 +2,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const ButtonWrapper = ({ title, onPress, style, textStyle, icon,disable }) => {
+const ButtonWrapper = ({ title, onPress, style, textStyle, icon,disable,iconstyle }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -20,7 +20,7 @@ const ButtonWrapper = ({ title, onPress, style, textStyle, icon,disable }) => {
           name={icon}
           size={20}
           color="#FFFFFF"
-          style={{ marginLeft: 8 }}
+          style={[{ marginLeft: 8 }, iconstyle]}
         />
       )}
     </TouchableOpacity>

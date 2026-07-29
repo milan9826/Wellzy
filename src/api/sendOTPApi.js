@@ -27,6 +27,7 @@ export const sendOTP = async (data) => {
 };
 
 
+
 export const verifyOTP = async (data) => {
   try {
     console.log('Verifying OTP with data:', data);

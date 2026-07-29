@@ -88,8 +88,8 @@ const FamilyScreen = ({ navigation, route }) => {
         <Header
           title="Family"
           navigation={navigation}
-          icon="menu"
-          lefticon={() => navigation.openDrawer()}
+          // icon="menu"
+          // lefticon={() => navigation.openDrawer()}
         />
       ) : (
         <Header
@@ -100,7 +100,7 @@ const FamilyScreen = ({ navigation, route }) => {
         />
       )}
 
-      <Text
+      {/* <Text
         style={{
           fontSize: 24,
           fontWeight: 'bold',
@@ -109,7 +109,7 @@ const FamilyScreen = ({ navigation, route }) => {
         }}
       >
         Family
-      </Text>
+      </Text> */}
 
       <View
         style={{

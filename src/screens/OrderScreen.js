@@ -44,8 +44,6 @@ const [cartLength, setCartLength] = useState(0);
 
    
 
-
-
   const handleCartPress = () => {
     navigation.navigate('Cart');
   };
@@ -56,14 +54,7 @@ const [cartLength, setCartLength] = useState(0);
       .includes(searchText.toLowerCase()),
   );
 
-  if (loading) {
-    return (
-      <SafeAreaView style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color="#111827" />
-        <Text style={styles.loadingText}>Loading products...</Text>
-      </SafeAreaView>
-    );
-  }
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,14 +66,15 @@ const [cartLength, setCartLength] = useState(0);
               title="Orders"
               navigation={navigation}
               onPress={() => {}}
-              icon="menu"
-              lefticon={() => navigation.openDrawer()}
-              righticon={true}
-              righticonname="add-circle-outline"
-              secondBtn={true}
+              // icon="menu"
+              // lefticon={() => navigation.openDrawer()}
+              // righticon={true}
+              // righticonname="add-circle-outline"
+               secondBtn={true}
               secondBtnicon="cart-outline"
               secondBtnPress={handleCartPress}
             />
+
             {totalItems > 0 && (
               <View style={styles.cartBadge}>
                 <Text style={styles.cartBadgeText}>{totalItems}</Text>

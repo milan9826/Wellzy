@@ -7,6 +7,7 @@ import AddUpdateScreen from '../screens/AddUpdateScreen';
 import CartScreen from '../screens/CartScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
+import YourOrderScreen from '../screens/YourOrderScreen';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = ({ initialRouteName = 'Login' }) => {
@@ -48,6 +49,12 @@ const AppNavigator = ({ initialRouteName = 'Login' }) => {
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="YourOrder"
+        component={YourOrderScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

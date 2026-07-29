@@ -24,6 +24,7 @@ const HomeScreen = ({ navigation }) => {
 
 
   const [location, setLocation] = useState('');
+
   const medicine = [
     {
       name: 'Metformin 500',
@@ -59,34 +60,24 @@ const HomeScreen = ({ navigation }) => {
   ];
 
   const [camModalVisible, setCamModalVisible] = useState(false);
+  const [user, setUser] = useState({});
 
-  const name = async () => {
-    try {
-      const value = await AsyncStorage.getItem('name');
-      if (value !== null) {
-        console.log('Retrieved name from AsyncStorage:', value);
-        return value;
-      } else {
-        console.log('No name found in AsyncStorage.');
-        return '';
-      }
-    } catch (error) {
-      console.error('Error retrieving name from AsyncStorage:', error);
-      return '';
-    }
-  };
+  
 
   useEffect(() => {
     const fetchLocation = async () => {
       try {
+        const user = await AsyncStorage.getItem('user');
+        setUser(JSON.parse(user));
         const addressData = await getAddressApi();
-        if (addressData && addressData.length > 0) {
-          const firstAddress = addressData[0];
-          const formattedLocation = `${firstAddress.address_line_1}, ${firstAddress.city}, ${firstAddress.state}`;
-          setLocation(formattedLocation);
-        } else {
-          console.log('No addresses found.');
-        }
+        setLocation(addressData?.[0]?.address_line_1 || 'Not Available');
+        // if (addressData && addressData.length > 0) {
+        //   const firstAddress = addressData[0];
+        //   const formattedLocation = `${firstAddress.address_line_1}, ${firstAddress.city}, ${firstAddress.state}`;
+        //   setLocation(formattedLocation);
+        // } else {
+        //   console.log('No addresses found.');
+        // }
       } catch (error) {
         console.error('Error fetching addresses:', error);
       }
@@ -140,15 +131,17 @@ const HomeScreen = ({ navigation }) => {
     }, 400);
   };
 
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Header
-        title=""
+        title={location || 'Not Available'}
         navigation={navigation}
         onPress={() => navigation.navigate('Store')}
-        lefticon={() => navigation.openDrawer()}
-        icon="menu"
+         lefticon={() => {}}
+         icon="location-sharp"
         righticon={true}
       />
 
@@ -158,7 +151,7 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
       >
         <View style={{ marginTop: 10, marginBottom: 12 ,flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-        <Text style={styles.text}>Good morning, {name()}</Text>
+        <Text style={styles.text}>Good morning, {user.first_name}</Text>
 
         <ButtonWrapper
           title="+ Add new order"

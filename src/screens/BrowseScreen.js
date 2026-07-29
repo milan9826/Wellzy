@@ -22,23 +22,23 @@ const BrowseScreen = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       {isInDrawer ? (
         <Header
-          title="Browse"
+          title="Categories"
           navigation={navigation}
-          icon="menu"
-          lefticon={() => navigation.openDrawer()}
+          // icon="menu"
+          // lefticon={() => navigation.openDrawer()}
         />
       ) : (
         <Header
-          title="Browse"
+          title="Categories"
           navigation={navigation}
           icon="arrow-back"
           lefticon={() => navigation.goBack()}
         />
       )}
 
-      <Text style={{ fontSize: 24, marginLeft: 20, paddingVertical: 8 }}>
+      {/* <Text style={{ fontSize: 24, marginLeft: 20, paddingVertical: 8 }}>
         Categories
-      </Text>
+      </Text> */}
       <View
         style={{ flex: 1, width: '90%', alignSelf: 'center', marginTop: -4 }}
       >

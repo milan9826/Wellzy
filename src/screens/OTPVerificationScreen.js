@@ -40,12 +40,15 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         otp_code: otp,
       };
       const response=await verifyOTP(data);
+
       
       if(response.needs_registration) {
         navigation.navigate('Register', {  response });
       }else {
         await AsyncStorage.setItem('token', response.token);
-        await AsyncStorage.setItem('name', response.user.full_name);
+        await AsyncStorage.setItem('name', response.user.name);
+        await AsyncStorage.setItem('user', JSON.stringify(response.user));
+
         navigation.navigate('Drawer', {
           screen: 'Tabs',
           params: {

@@ -41,14 +41,14 @@ export const CartProvider = ({ children }) => {
   const handleQty = async (productId, change) => { 
     try {
       const currentQty = qtyById[productId] || 0;
-      const newQty = Math.max(0, currentQty + change);
+      const newQty = Math.max(-1, currentQty + change);
 
       if (currentQty === 0 && newQty > 0) {
         await addToCartApi({
           product_id: productId,
           quantity: newQty,
         });
-      } else if (newQty === 0) {
+      } else if (newQty <= 0) {
         await removeCartItemApi(productId);
       } else {
         const res = await updateCartApi(productId, newQty);

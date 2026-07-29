@@ -15,6 +15,7 @@ const Header = ({
   secondBtnPress,
   secondBtnicon,
   textValue,
+  titleStyle,
 }) => {
   const [name, setName] = React.useState('');
 
@@ -34,11 +35,14 @@ const Header = ({
   //console.log('name in header:', name);
 
   return (
-    <View style={styles.headerContainer}>
+    <View style={[styles.headerContainer]}>
       <TouchableOpacity style={styles.drawerButton} onPress={lefticon}>
-        <Ionicons name={icon} size={24} color="#fff" />
+        <Ionicons name={icon} size={24} color="#141212" />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>{title}</Text>
+      {lefticon ?(      <Text style={[styles.headerTitle, titleStyle]}>{title}</Text>
+      ) : (
+        <Text style={[styles.headerTitle,styles.marginLeft,titleStyle]}>{title}</Text>
+      )}
       <View style={styles.headerActions}>
         {secondBtn ? (
           <TouchableOpacity style={styles.seconDBtn} onPress={secondBtnPress}>
@@ -70,7 +74,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     transparent: true,
     height: 60,
-    backgroundColor: '#141618',
+    backgroundColor: '#ffffff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -80,8 +84,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#151212',
     flex: 1,
+  },
+  marginLeft: {
+    marginLeft:-30,
   },
   drawerButton: {
     width: 30,

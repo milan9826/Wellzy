@@ -17,25 +17,27 @@ import { Ionicons } from '@react-native-vector-icons/ionicons';
 import signUp from '../api/authApi';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { useMemo } from 'react';
+import { registerUser } from '../api/registerUserApi';
 
-const RegisterScreen = ({route}) => {
+
+const RegisterScreen = ({ route }) => {
   const [firstname, SetFirstName] = useState('');
   const [lastname, SetLastName] = useState('');
   const [email, SetEmail] = useState('');
   const [number, SetNumber] = useState('');
- 
+
   const navigation = useNavigation();
-    const options =useMemo(() => [
-  { id: '1', label: 'Male' },
-  { id: '2', label: 'Female' },
-  { id: '3', label: 'Other' },
-], []);
+  const options = useMemo(() => [
+    { id: '1', label: 'Male' },
+    { id: '2', label: 'Female' },
+    { id: '3', label: 'Other' },
+  ], []);
   // const [loading, setLoading] = useState(false);
-   const [firstnameError, setFirstNameError] = useState('');
-   const [lastnameError, setLastNameError] = useState('');
+  const [firstnameError, setFirstNameError] = useState('');
+  const [lastnameError, setLastNameError] = useState('');
   const [emailError, setEmailError] = useState('');
- 
-  const [gender,setGender] = useState(['Male','Female','Other']);
+
+  const [gender, setGender] = useState(['Male', 'Female', 'Other']);
   const [weight, SetWeight] = useState('');
   const [age, SetAge] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,7 +47,10 @@ const RegisterScreen = ({route}) => {
 
   const countryCode = '+91';
   const token = route.params?.response?.token || '';
-  
+
+
+
+
 
   const handleRegister = async () => {
     // Validate name
@@ -132,62 +137,86 @@ const RegisterScreen = ({route}) => {
     //   setLoading(false);
     // }
 
-    const isValid=true;
+
+
+    const isValid = true;
 
     if (firstname === '') {
       setFirstNameError('Please enter your first name');
-      isValid=false;
+      isValid = false;
     } else {
       setFirstNameError('');
     }
 
     if (lastname === '') {
       setLastNameError('Please enter your last name');
-      isValid=false;
+      isValid = false;
     } else {
       setLastNameError('');
     }
 
     if (number === '') {
       setNumberError('Please enter your number');
-      isValid=false;
+      isValid = false;
     } else if (!/^[0-9]{10}$/.test(number)) {
       setNumberError('Please enter a valid 10-digit number');
-      isValid=false;
+      isValid = false;
     } else {
       setNumberError('');
     }
 
     if (weight === '') {
       setWeightError('Please enter your body weight');
-      isValid=false;
+      isValid = false;
     } else if (!/^[0-9]+$/.test(weight)) {
       setWeightError('Please enter a valid body weight');
-      isValid=false;
+      isValid = false;
     } else {
       setWeightError('');
     }
 
     if (age === '') {
       setAgeError('Please enter your age');
-      isValid=false;
+      isValid = false;
     } else if (!/^[0-9]+$/.test(age)) {
       setAgeError('Please enter a valid age');
-      isValid=false;
+      isValid = false;
     } else {
       setAgeError('');
     }
 
+     const regData = {
+      "role": "Customer",
+      "mobile_number": number,
+      "country_code": "+91",
+      "gender": gender,
+      "age": age,
+      "body_weight": weight,
+      "first_name": firstname,
+      "last_name": lastname,
+      "email": email
+    }
     if (isValid) {
-      await AsyncStorage.setItem('token',token);
-      navigation.navigate('Login');
-    } 
+      const response=await registerUser(regData);
+            await AsyncStorage.setItem('token', response.token);
+            await AsyncStorage.setItem('name', response.user.name);
+            await AsyncStorage.setItem('user', JSON.stringify(response.user));
+
+      navigation.navigate('Drawer', {
+        screen: 'Tabs',
+        params: {
+          screen: 'Home', 
+        },
+      });
+    }
+
+   
 
 
 
 
 
-    
+
   };
 
   return (
@@ -208,7 +237,7 @@ const RegisterScreen = ({route}) => {
             </View>
 
 
-             <View style={styles.inputGroup}>
+            <View style={styles.inputGroup}>
               <Text style={styles.label}>Last Name</Text>
               <TextInputWraper
                 placeholder="Enter Last Name here..."
@@ -232,7 +261,7 @@ const RegisterScreen = ({route}) => {
             </View>
 
 
-              <View style={styles.inputGroup}>
+            <View style={styles.inputGroup}>
               <Text style={styles.label}>Number</Text>
               <Text style={styles.country}>+91</Text>
               <TextInputWraper
@@ -244,7 +273,7 @@ const RegisterScreen = ({route}) => {
                 error={numberError}
               />
             </View>
-    <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Body Weight</Text>
               <TextInputWraper
@@ -255,7 +284,7 @@ const RegisterScreen = ({route}) => {
                 error={weightError}
                 keyboardType="numeric"
               />
-             
+
             </View>
 
             <View style={styles.inputGroup}>
@@ -268,9 +297,9 @@ const RegisterScreen = ({route}) => {
                 error={ageError}
                 keyboardType="numeric"
               />
-             
-             
-           
+
+
+
             </View>
 
 
@@ -286,7 +315,7 @@ const RegisterScreen = ({route}) => {
             </View>
 
 
-            
+
 
             <ButtonWrapper
               title="Register"
@@ -294,7 +323,7 @@ const RegisterScreen = ({route}) => {
               style={[styles.button, loading && styles.buttonDisabled]}
               disabled={loading}
             />
-           
+
           </View>
         </ScrollView>
       </SafeAreaView>

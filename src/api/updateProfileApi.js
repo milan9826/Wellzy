@@ -34,6 +34,6 @@ export const updateProfile = async (username, firstname, lastname) => {
   } catch (error) {
     console.log('log 2:', error);
     console.error('Error updating profile:', error);
-    // console.log('Profile updated not successfully:', error);
+    throw error;
   }
 };

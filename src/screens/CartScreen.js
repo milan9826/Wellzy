@@ -17,19 +17,26 @@ import { removeCartItemApi } from '../api/cartApi/removeCartitemApi';
 import { clearCartApi } from '../api/cartApi/clearCartApi';
 
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = ({ navigation,route }) => {
   const { cartItems, setCartItems, handleQty, removeFromCart, fetchCart, loading: isCartLoading, qtyById } = useCart();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedItemToRemove, setSelectedItemToRemove] = React.useState(null);
   const [loading, setLoading] = useState(false);
   const [disable,setDisable] = useState(false);
+  const [medQtyMap, setMedQtyMap] = useState({});
+
+  const reorderData=route.params?.item || null;
+  console.log('reorderData:', reorderData);
 
 
   const cart = cartItems;
 
   const getProductId = item => {
-    return item?.product_id || item?.id || item?._id || item?.product?.id || item?.product?._id;
+    return item?.product_id ;//|| item?.id || item?._id || item?.product?.id || item?.product?._id;
   };
+
+
+ 
 
   const getItemQty = item => {
     const productId = getProductId(item);
@@ -54,11 +61,16 @@ const CartScreen = ({ navigation }) => {
   const handleDecreaseQuantity = async item => {
     const productId = getProductId(item);
     const currentQty = getItemQty(item);
-    if (currentQty <= 1) return;
     if (productId) {
       try {
         setDisable(true);
-        await handleQty(productId, -1, item);
+        if (currentQty <= 1) {
+          // Quantity 0 hogi to item auto-remove
+          await removeCartItemApi(productId);
+          removeFromCart(productId);
+        } else {
+          await handleQty(productId, -1, item);
+        }
       } finally {
         setDisable(false);
       }
@@ -75,10 +87,7 @@ const CartScreen = ({ navigation }) => {
     fetchCart();
   }, []);
 
-  const handleRemoveItem = item => {
-    setSelectedItemToRemove(item);
-    setModalVisible(true);
-  };
+
 
 
   const handleRemove = async () => {
@@ -102,6 +111,14 @@ const CartScreen = ({ navigation }) => {
     setModalVisible(false);
     setSelectedItemToRemove(null);
   };
+  const handleMedQty = (index, change) => {
+    setMedQtyMap(prev => {
+      const current = prev[index] ?? 1;
+      const newQty = current + change;
+      if (newQty < 1) return prev;
+      return { ...prev, [index]: newQty };
+    });
+  }
 
 
   const handleClearCart = async () => {
@@ -123,9 +140,10 @@ const CartScreen = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Header
         navigation={navigation}
-        title="Cart"
+        title="Your Cart"
         icon="arrow-back"
         lefticon={() => navigation.goBack()}
+        titleStyle={styles.titleStyle}
       />
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -138,7 +156,7 @@ const CartScreen = ({ navigation }) => {
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
           >
-            {cart.length === 0 ? (
+            {(!reorderData && cart.length === 0) ? (
               <View style={styles.emptyState}>
                 <Text style={styles.emptyTitle}>Your cart is empty</Text>
                 <Text style={styles.emptyText}>
@@ -147,50 +165,104 @@ const CartScreen = ({ navigation }) => {
               </View>
             ) : (
               <>
-                <Text style={styles.sectionTitle}>ORDER SUMMARY</Text>
-                {cart.map((item, index) => (
-                  <View key={item.id || item._id || item.product_id || index} style={styles.card}>
-                    <View style={styles.itemDetails}>
-                      <Text style={styles.cardText} numberOfLines={1}>
-                        {item.name || item.product?.name}
-                      </Text>
-                      <Text style={styles.price}>₹{item.price || item.product?.price}</Text>
-                    </View>
-                    <View style={styles.quantityControls}>
-                      <ButtonWrapper
-                        title="−"
-                        onPress={() => handleDecreaseQuantity(item)}
-                        style={styles.quantityButton}
-                        textStyle={styles.quantityButtonText}
-                        disable={disable}
-                      />
-                      <View style={styles.quantityBadge}>
-                        <Text style={styles.quantityText}>{getItemQty(item)}</Text>
+              {reorderData ? (
+                <>
+                  <Text style={styles.sectionTitle}>Reorder Summary</Text>
+                  {/* <Text style={[styles.price, { marginBottom: 8 }]}>Order Total: ₹{reorderData.totalAmount}</Text> */}
+                  {reorderData.medicines.map((medicine, index) => (
+                    <View key={index} style={styles.card}>
+                      <View style={styles.itemDetails}>
+                        <Text style={styles.cardText} numberOfLines={1}>
+                          {medicine}
+                        </Text>
                       </View>
-                      <ButtonWrapper
-                        title="+"
-                        onPress={() => handleIncreaseQuantity(item)}
-                        style={styles.quantityButton}
-                        textStyle={styles.quantityButtonText}
-                        disable={disable}
-                      />
+                      <View style={styles.quantityControls}>
+                        <ButtonWrapper
+                          title="−"
+                          onPress={() => handleMedQty(index, -1)}
+                          style={styles.quantityButton}
+                          textStyle={styles.quantityButtonText}
+                          disable={disable}
+                        />
+                        <View style={styles.quantityBadge}>
+                          <Text style={styles.quantityText}>{medQtyMap[index] ?? 1}</Text>
+                        </View>
+                        <ButtonWrapper
+                          title="+"
+                          onPress={() => handleMedQty(index, 1)}
+                          style={styles.quantityButton}
+                          textStyle={styles.quantityButtonText}
+                          disable={disable}
+                        />
+                      </View>
+                      
                     </View>
-                    <TouchableOpacity
-                      onPress={() => handleRemoveItem(item)}
-                      style={styles.removeButton}
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons name="trash-outline" size={20} color="#eae6e6ff" />
-                    </TouchableOpacity>
-                  </View>
-                ))}
+                  ))}
+                </>
+              ) : (
+                <>
+                  <Text style={styles.sectionTitle}>ORDER SUMMARY</Text>
+                  {cart.map((item, index) => (
+                    <View key={item.id || item._id || item.product_id || index} style={styles.card}>
+                      <View style={styles.itemDetails}>
+                        <Text style={styles.cardText} numberOfLines={1}>
+                          {item.name || item.product?.name}
+                        </Text>
+                        <Text style={styles.price}>₹{item.price || item.product?.price} each</Text>
+                      </View>
+                      <View style={styles.quantityControls}>
+                        <ButtonWrapper
+                          title="−"
+                          onPress={() => handleDecreaseQuantity(item)}
+                          style={styles.quantityButton}
+                          textStyle={styles.quantityButtonText}
+                          disable={disable}
+                        />
+                        <View style={styles.quantityBadge}>
+                          <Text style={styles.quantityText}>{getItemQty(item)}</Text>
+                        </View>
+                        <ButtonWrapper
+                          title="+"
+                          onPress={() => handleIncreaseQuantity(item)}
+                          style={styles.quantityButton}
+                          textStyle={styles.quantityButtonText}
+                          disable={disable}
+                        />
+                      </View>
+                      {/* <TouchableOpacity
+                        onPress={() => handleRemoveItem(item)}
+                        style={styles.removeButton}
+                        activeOpacity={0.7}
+                      >
+                        <Ionicons name="trash-outline" size={20} color="#eae6e6ff" />
+                      </TouchableOpacity> */}
+                    </View>
+                  ))}
+                </>
+              )}
               </>
             )}
           </ScrollView>
           <View style={styles.totalCard}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalAmount}>₹{total.toFixed(2)}</Text>
-            <ButtonWrapper title="Clear Cart" onPress={handleClearCart} />
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Order Total</Text>
+              <Text style={styles.totalAmount}>₹{reorderData?.totalAmount ?? total.toFixed(2)}</Text>
+            </View>
+            <ButtonWrapper
+            title="Checkout"
+            textStyle={styles.checkoutBtnText}
+              style={styles.checkoutBtn}
+              onPress={() => navigation.navigate('Orders')}
+              activeOpacity={0.85}
+            />
+              
+            <ButtonWrapper
+              title="Clear Cart"
+              style={styles.clearBtn}
+              onPress={handleClearCart}
+              activeOpacity={0.7}
+
+            />
           </View>
         </>
       )}
@@ -223,7 +295,7 @@ const CartScreen = ({ navigation }) => {
       )}
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screen: {
@@ -234,8 +306,8 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    paddingBottom: 92,
-    backgroundColor: '#F7F8FA',
+    paddingBottom: 160,
+    backgroundColor: '#FFFFFF',
   },
   sectionTitle: {
     color: '#6B7280',
@@ -245,18 +317,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   card: {
-    marginBottom: 12,
-    padding: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#111827',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFFFFF',
   },
   itemDetails: {
     flex: 1,
@@ -264,35 +332,39 @@ const styles = StyleSheet.create({
   },
 
   cardText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  price: {
-    marginTop: 6,
     fontSize: 15,
     fontWeight: '600',
-    color: '#2563EB',
+    color: '#111827',
+    marginBottom: 3,
+  },
+  price: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: '#6B7280',
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
+  titleStyle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
+  marginLeft:98, },
 
   quantityBadge: {
-    minWidth: 34,
-
-    height: 34,
-    borderRadius: 9,
-    backgroundColor: '#F3F4F6',
+    minWidth: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   quantityText: {
     color: '#111827',
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '600',
+    minWidth: 20,
+    textAlign: 'center',
   },
   removeButton: {
     padding: 8,
@@ -304,39 +376,74 @@ const styles = StyleSheet.create({
   },
 
   quantityButton: {
-    minHeight: 34,
-    width: 34,
+    width: 30,
+    height: 30,
+    minHeight: 0,
+    borderRadius: 15,
+    borderWidth: 1.5,
+    borderColor: '#D1D5DB',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 0,
     paddingVertical: 0,
-
-    borderRadius: 9,
-    backgroundColor: '#111827',
   },
   quantityButtonText: {
-    color: '#FFFFFF',
-    fontSize: 20,
+    color: '#374151',
+    fontSize: 18,
     fontWeight: '500',
-    lineHeight: 22,
+    lineHeight: 20,
   },
   totalCard: {
-    marginTop: 8,
-    padding: 18,
-    borderRadius: 16,
-    backgroundColor: '#111827',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 28,
+  },
+  totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignSelf: 'center',
-    position: 'absolute',
-    bottom: 20,
-    width: '70%',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  checkoutBtn: {
+    backgroundColor: '#111827',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  checkoutBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  clearBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+  },
+  clearBtnText: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
   },
   totalLabel: {
-    color: '#D1D5DB',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#6B7280',
+    fontSize: 15,
+    fontWeight: '500',
   },
   totalAmount: {
-    color: '#FFFFFF',
+    color: '#111827',
     fontSize: 22,
     fontWeight: '800',
   },
