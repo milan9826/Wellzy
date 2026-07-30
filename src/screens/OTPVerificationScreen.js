@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import React, { useState ,useEffect,useRef} from 'react';
+import { View, Text, StyleSheet, StatusBar, Pressable } from 'react-native';
 import TextInputWraper from '../component/TextInput';
 import ButtonWrapper from '../component/Button';
-import { verifyOTP } from '../api/sendOTPApi';
+import { verifyOTP,sendOTP } from '../api/sendOTPApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { theme } from '../theme';
 
 
 
 
 const OTPVerificationScreen = ({ route, navigation }) => {
+  // const [otp, setOtp] = useState(['', '', '', '' ]);
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
+  const usernumber = route.params.usernumber;
+  const [timer, setTimer] = useState(30);
 
+  const inputRefs=[
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null)
+  ]
 
   const options = [
   { id: '1', label: 'Male' },
@@ -37,8 +47,9 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     try {
       const data = {
         mobile_number:route.params.usernumber, 
-        otp_code: otp,
+        otp_code: otp
       };
+
       const response=await verifyOTP(data);
 
       
@@ -64,49 +75,116 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     }
 }
 
+useEffect(() => {
+  const time = setTimeout(() => {
+
+    setTimer((prevTimer) => {
+      if (prevTimer > 0) {
+        return prevTimer - 1;
+      } else {
+        clearTimeout(time);
+        return 0;
+      } 
+    });
+  }, 1000);
+
+  return () => clearTimeout(timer);
+}, [timer]);
+
+
+const handleResendOtp = async () => {
+  try {
+    const data = {
+      mobile_number: usernumber,
+      country_code: '+91',
+      otp_type: 'LOGIN',
+    };
+    await sendOTP(data);
+    setTimer(5);
+  } catch (error) {
+    console.error('Error resending OTP:', error);
+    setOtpError('Failed to resend OTP. Please try again.');
+  }
+}
 
 
 return (
     <View style={styles.container}>
-      <Text style={styles.title}>OTP Verification</Text>
-      <Text style={styles.subtitle}>Enter the OTP sent to your number</Text>
+      <Text style={styles.title}>Verify OTP</Text>
+      <Text style={styles.subtitle}>Enter the 4-digit code sent to {usernumber}</Text>
   <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <View style={styles.inputGroup}>
-                      <Text style={styles.label}>OTP</Text>
-      <TextInputWraper 
-        placeholder="Enter OTP"
+
+  <View style={styles.inputGroup}>
+    {/* {otp.map((digit, index) => (
+      <TextInputWraper
+        key={index}
+        value={digit}
+        onChangeText={(text) => {
+          const newOtp = [...otp];
+          newOtp[index] = text;
+          setOtp(newOtp);
+        }}
+        onKeyPress={({ nativeEvent }) => {
+            if (
+              nativeEvent.key === 'Backspace' &&
+              !value &&
+              index > 0
+            ) {
+              inputRefs.current[index - 1]?.focus();
+            }
+          }}
+        ref={inputRefs[index]}
+        maxLength={1}
+        style={styles.input}
+        containerStyle={{ width: 'auto' }}
+        keyboardType="numeric"
+      />
+    ))} */}
+    <TextInputWraper
         value={otp}
         onChangeText={setOtp}
-        error={otpError}
+        placeholder="Enter OTP"
         keyboardType="numeric"
-        style={styles.input}
       />
-      </View>
+  </View>
+
+  <ButtonWrapper
+    title="Verify OTP"
+    style={styles.button}
+    onPress={handleVerifyOTP}
+  />
+{timer > 0 ? (
+    <View style={{ alignItems: 'center',flexDirection: 'row', justifyContent: 'center' }}>
+
+  <Text style={styles.timer}>Didn't receive the code? </Text>
+  <Text style={styles.resendText}>{timer} seconds remaining</Text>
+  </View>
+) : (
+  <View style={{  alignItems: 'center',flexDirection: 'row', justifyContent: 'center' }}>
+      <Text style={styles.timer}>Didn't receive the code? </Text>
+      <Pressable onPress={handleResendOtp}>
+        <Text style={styles.resendText}>Resend OTP</Text>
+      </Pressable>
+
+  </View>
+)}
+
+<ButtonWrapper title="Change Number" style={[styles.button, { backgroundColor: "#FFFFFF", borderColor: theme.colors.danger, borderWidth: 1,marginTop:30 }]} textStyle={{color:theme.colors.button,fontWeight:600,fontSize:18}} onPress={() => navigation.replace('Login')} />
 
 
-      
 
-      <ButtonWrapper
-        title="Verify OTP"
-        style={styles.button}
-        onPress={handleVerifyOTP}
-      />
-        
-
-    
-      </View>
+    </View>
 )
 }
 const styles=StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 24,
     padding: 16,
     transparent: true,
     },
     title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 16,
     },
@@ -116,20 +194,42 @@ const styles=StyleSheet.create({
     marginBottom: 32,
     },
      input: {
-    borderWidth: 1,
-    borderColor: '#151212',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
+      height: 60,
+      width: 60,
+      borderWidth: 1.5,
+      borderColor: '#ccc',
+      borderRadius: 10,
+      textAlign: 'center',
+      fontSize: 22,
+      fontWeight: 'bold',
+      color: '#000',
+      backgroundColor: '#fff',
   },
   button: {
     marginVertical: 10,
-    backgroundColor: '#141618',
+    backgroundColor: theme.colors.button,
   },
    inputGroup: {
-    marginBottom: 4,
-    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+    paddingHorizontal: 8,
   },
+  timer: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 26,
+    alignSelf: 'center',
+  },
+
+resendText: {
+  color: theme.colors.button,
+  marginLeft: 4,
+  marginTop: 24,
+  fontSize: 16,
+  fontWeight: '600',
+},
+   
   label: {
     fontSize: 18,
     marginBottom: 6,

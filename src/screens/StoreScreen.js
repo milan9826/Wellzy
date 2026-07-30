@@ -217,7 +217,6 @@ const StoreScreen = ({ navigation }) => {
             {initialLoading ? (
               <ActivityIndicator size="large" color="#141618" />
             ) : edit ? (
-              /* --- EDIT MODE --- */
               <View style={{ width: '100%', alignItems: 'center' }}>
                 <View style={styles.profileWrapper}>
                   {profileImage ? (
@@ -293,7 +292,6 @@ const StoreScreen = ({ navigation }) => {
                 )}
               </View>
             ) : (
-              /* --- VIEW MODE --- */
 
               <View style={{ width: '100%', alignItems: 'center',marginTop: 20 }}>
                 

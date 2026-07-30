@@ -75,11 +75,7 @@ const [cartLength, setCartLength] = useState(0);
               secondBtnPress={handleCartPress}
             />
 
-            {totalItems > 0 && (
-              <View style={styles.cartBadge}>
-                <Text style={styles.cartBadgeText}>{totalItems}</Text>
-              </View>
-            )}
+           
           </View>
           <View style={styles.searchInputContainer}>
             <TextInputWraper

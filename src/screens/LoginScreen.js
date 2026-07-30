@@ -17,6 +17,7 @@ import { login } from '../api/authApi';
 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { theme } from '../theme';
 import { sendOTP } from '../api/sendOTPApi';
 
 const LoginScreen = ({ route }) => {
@@ -114,7 +115,7 @@ const LoginScreen = ({ route }) => {
       };
        await sendOTP(data);
       setNumberError('');
-      navigation.navigate('OTPVerification', { usernumber: usernumber });
+      navigation.replace('OTPVerification', { usernumber: usernumber });
     } catch (error) {
       console.error('Error sending OTP:', error);
       setNumberError('Failed to send OTP. Please try again.');
@@ -136,22 +137,45 @@ const LoginScreen = ({ route }) => {
             </View>
           ) : (
             <View style={styles.container}>
-              <View style={styles.formContainer}>
-                <Text style={styles.welcomeText}>Welcome to App</Text>
+              <View style={styles.logo}>  
+                {/* <Ionicons 
+                  name="add-circle-outline"
+                  size={28}
+                  color="#141618"
+                 
+                /> */}
 
+                <Text style={{ fontSize: 28, fontWeight: 'bold', color: theme.colors.danger }}>Wellzy</Text>
+                <Text style={{ fontSize: 16, color: theme.colors.logoText }}>YOUR FAMILY WELLNESS SPACE</Text>
+              </View>
+              <View style={styles.formContainer}>
+                  <View style={{ alignItems: 'center', marginBottom: 40 }}>
+                <Text style={styles.welcomeText}>Welcome</Text>
+                <Text style={{ fontSize: 16,  textAlign: 'center' }}>Enter your mobile number to continue</Text>
+</View>
                 {/* <Text style={styles.title}>Login</Text> */}
 
                 <View style={styles.inputGroup}>
-                  <Text style={styles.label}>Number</Text>
-                  <TextInputWraper
+                  <Text style={styles.label}>MOBILE NUMBER</Text>
+                  <View style={styles.countryCodeContainer}>
+                    <View style={styles.ccontainer}>
+                    <Text style={styles.flag} >IN</Text>
+                    <Text style={styles.countryCode}>+91</Text>
+                    </View>
+                    <TextInputWraper
                     placeholder="Enter number Here.."
                     style={styles.input}
                     value={usernumber}
                     onChangeText={setUserNumber}
-                    error={numberError}
+    
                     keytype={'next'}
                     keyboardType="numeric"
                   />
+                  </View>
+                  <Text style={{ color: theme.colors.error, fontSize: 12, marginTop: 4 }}>{numberError}</Text>
+                  
+                  <Text style={{ color: theme.colors.danger, fontSize: 12, marginTop: 4 }}>• We'll send you an OTP to verify</Text>
+
                 </View>
 
                 <ButtonWrapper
@@ -194,6 +218,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  countryCodeContainer: {
+    flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  borderRadius: 12,
+  height: 56,
+  paddingHorizontal: 12,
+  backgroundColor: '#fff',
+  },
+  ccontainer: {
+    flexDirection: 'row',
+  alignItems: 'center',
+  paddingRight: 10,
+  borderRightWidth: 1,
+  borderRightColor: theme.colors.border,
+  },
+  flag: {
+  fontSize: 18,
+  marginRight: 6,
+},
+
+code: {
+  fontSize: 16,
+  fontWeight: '600',
+},
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -210,27 +260,31 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   label: {
-    fontSize: 18,
+    fontSize: 14,
     marginBottom: 6,
+    color: theme.colors.label,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#151212',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
+   flex: 1,
+  marginLeft: 12,
+  fontSize: 16,
+
   },
   button: {
     marginVertical: 10,
-    backgroundColor: '#141618',
+    backgroundColor: theme.colors.button,
   },
   buttonDisabled: {
     opacity: 0.5,
   },
+  logo: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 60,
+    marginBottom: 20,
     textAlign: 'center',
   },
   loadingOverlay: {

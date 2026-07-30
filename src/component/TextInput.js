@@ -11,10 +11,12 @@ const TextInputWraper = ({
   keyboardType,
   icon,
   keytype,
+  errorStyle,
+  containerStyle,
   ...rest
 }) => {
   return (
-    <View style={styles.fieldContainer}>
+    <View style={[styles.fieldContainer, containerStyle]}>
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -33,7 +35,7 @@ const TextInputWraper = ({
           style={{ position: 'absolute', right: 10, top: 12 }}
         />
       )}
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={[styles.errorText, errorStyle]}>{error}</Text> : null}
     </View>
   );
 };

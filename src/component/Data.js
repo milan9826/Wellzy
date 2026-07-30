@@ -1,6 +1,7 @@
 const products = [
   {
     id: 1,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Paracetamol 500mg',
     price: 55,
@@ -9,6 +10,7 @@ const products = [
   },
   {
     id: 2,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Dolo 650',
     price: 68,
@@ -17,8 +19,8 @@ const products = [
   },
   {
     id: 3,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
-
     name: 'Crocin Advance',
     price: 62,
     qty: 0,
@@ -26,6 +28,7 @@ const products = [
   },
   {
     id: 4,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Azithromycin 500mg',
     price: 180,
@@ -34,6 +37,7 @@ const products = [
   },
   {
     id: 5,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Amoxicillin 500mg',
     price: 145,
@@ -42,6 +46,7 @@ const products = [
   },
   {
     id: 6,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Cetirizine 10mg',
     price: 42,
@@ -50,6 +55,7 @@ const products = [
   },
   {
     id: 7,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Pantoprazole 40mg',
     price: 120,
@@ -58,6 +64,7 @@ const products = [
   },
   {
     id: 8,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Omeprazole 20mg',
     price: 98,
@@ -66,6 +73,7 @@ const products = [
   },
   {
     id: 9,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Metformin 500mg',
     price: 135,
@@ -74,6 +82,7 @@ const products = [
   },
   {
     id: 10,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Glimepiride 2mg',
     price: 160,
@@ -82,6 +91,7 @@ const products = [
   },
   {
     id: 11,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Amlodipine 5mg',
     price: 85,
@@ -90,6 +100,7 @@ const products = [
   },
   {
     id: 12,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Telmisartan 40mg',
     price: 210,
@@ -98,8 +109,8 @@ const products = [
   },
   {
     id: 13,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
-
     name: 'Atorvastatin 10mg',
     price: 175,
     qty: 0,
@@ -107,6 +118,7 @@ const products = [
   },
   {
     id: 14,
+    category_id: 2,
     image: require('../images/medicine.jpg'),
     name: 'Ibuprofen 400mg',
     price: 75,
@@ -115,6 +127,7 @@ const products = [
   },
   {
     id: 15,
+    category_id: 3,
     image: require('../images/medicine.jpg'),
     name: 'Diclofenac 50mg',
     price: 95,
@@ -123,6 +136,7 @@ const products = [
   },
   {
     id: 16,
+    category_id: 3,
     image: require('../images/medicine.jpg'),
     name: 'Ondansetron 4mg',
     price: 110,
@@ -131,6 +145,7 @@ const products = [
   },
   {
     id: 17,
+    category_id: 3,
     image: require('../images/medicine.jpg'),
     name: 'Vitamin C Tablets',
     price: 150,
@@ -139,6 +154,7 @@ const products = [
   },
   {
     id: 18,
+    category_id: 3,
     image: require('../images/medicine.jpg'),
     name: 'Calcium Tablets',
     price: 185,
@@ -147,6 +163,7 @@ const products = [
   },
   {
     id: 19,
+    category_id: 4,
     image: require('../images/medicine.jpg'),
     name: 'Cough Syrup',
     price: 125,
@@ -155,6 +172,7 @@ const products = [
   },
   {
     id: 20,
+    category_id: 4,
     image: require('../images/medicine.jpg'),
     name: 'Antacid Syrup',
     price: 105,

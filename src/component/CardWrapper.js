@@ -4,6 +4,7 @@ import ButtonWrapper from './Button';
 
 const CardWrapper = ({
   title,
+  titleColor,
   content,
   button,
   btntitle,
@@ -27,7 +28,7 @@ const CardWrapper = ({
         cardStyle,
       ]}
     >
-      <Text style={styles.cardTitle} numberOfLines={2}>
+      <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={2}>
         {title}
       </Text>
       {des && (
@@ -65,11 +66,11 @@ const CardWrapper = ({
       ]}
     >
       {stutus ? (
-        <Text style={styles.cardTitle} numberOfLines={1}>
+        <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={1}>
           {title}
         </Text>
       ) : (
-        <Text style={styles.cardTitle} numberOfLines={2}>
+        <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={2}>
           {title}
         </Text>
       )}
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
+    color: '#111827',
   },
   cardContent: {
     marginBottom: 12,

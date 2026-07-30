@@ -140,7 +140,7 @@ const HomeScreen = ({ navigation }) => {
         title={location || 'Not Available'}
         navigation={navigation}
         onPress={() => navigation.navigate('Store')}
-         lefticon={() => {}}
+         lefticon={() => navigation.openDrawer()}
          icon="location-sharp"
         righticon={true}
       />
