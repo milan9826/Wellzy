@@ -261,7 +261,8 @@ const CartScreen = ({ navigation,route }) => {
               title="Proceed to checkout"
               textStyle={styles.checkoutBtnText}
               style={styles.checkoutBtn}
-              onPress={() => navigation.navigate('Orders')}
+              onPress={() => navigation.navigate('Checkout', { cartItems: reorderData ? reorderData : {cart,total} })}
+              
               activeOpacity={0.85}
             />
 

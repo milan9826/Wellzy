@@ -8,6 +8,8 @@ import CartScreen from '../screens/CartScreen';
 import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import YourOrderScreen from '../screens/YourOrderScreen';
+import CheckoutScreen from '../screens/ChekoutScreen';
+import OrderTracking from '../screens/OrderTracking';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = ({ initialRouteName = 'Login' }) => {
@@ -57,7 +59,20 @@ const AppNavigator = ({ initialRouteName = 'Login' }) => {
         component={YourOrderScreen}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="Checkout"
+        component={CheckoutScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="OrderTracking"
+        component={OrderTracking}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
+    
 export default AppNavigator;

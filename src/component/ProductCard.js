@@ -78,7 +78,7 @@ const ProductCard = ({ data = [], navigation }) => {
       )}
 
       <FlatList
-        data={filteredData}
+        data={data}
         keyExtractor={item => String(item.id)}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
