@@ -11,17 +11,13 @@ import {
 import ButtonWrapper from './Button';
 import { IMAGE_BASE_URL } from '../api/apiConstant';
 import { useCart } from '../context/CartContext';
-import { updateCartApi } from '../api/cartApi/updateCartApi';
 import { theme } from '../theme';
-
 
 const footerComponent = () => (
   <View style={styles.footer}>
     <Text style={styles.footerText}>No more products to load.</Text>
   </View>
 );
-
-
 
 const ProductCard = ({
   data = [],
@@ -34,61 +30,61 @@ const ProductCard = ({
   const { qtyById, handleQty } = useCart();
 
   const [dummyQtyById, setDummyQtyById] = React.useState({});
-  
+
 
   const handleCategoryPress = (categoryId) => {
     if (onSelectCategory) {
       onSelectCategory(categoryId);
-    } 
-   };
-   
+    }
+  };
+
 
   const categoriesWithAll = productCategories.length > 0
     ? [{ id: 'all', name: 'All' }, ...productCategories]
     : [];
 
-    const dummyMedicines = [
-  {
-    id: 1,
-    name: "Paracetamol 500mg",
-    price: 30,
-  },
-  {
-    id: 2,
-    name: "Ibuprofen 400mg",
-    price: 45,
-  },
-  {
-    id: 3,
-    name: "Amoxicillin 500mg",
-    price: 120,
-  },
-  {
-    id: 4,
-    name: "Cetirizine 10mg",
-    price: 35,
-  },
-  {
-    id: 5,
-    name: "Pantoprazole 40mg",
-    price: 90,
-  },
-  {
-    id: 6,
-    name: "Azithromycin 500mg",
-    price: 150,
-  },
-];
+  const dummyMedicines = [
+    {
+      id: 1,
+      name: "Paracetamol 500mg",
+      price: 30,
+    },
+    {
+      id: 2,
+      name: "Ibuprofen 400mg",
+      price: 45,
+    },
+    {
+      id: 3,
+      name: "Amoxicillin 500mg",
+      price: 120,
+    },
+    {
+      id: 4,
+      name: "Cetirizine 10mg",
+      price: 35,
+    },
+    {
+      id: 5,
+      name: "Pantoprazole 40mg",
+      price: 90,
+    },
+    {
+      id: 6,
+      name: "Azithromycin 500mg",
+      price: 150,
+    },
+  ];
 
-const handleDummyQty = (productId, change, item) => {
-  const currentQty = dummyQtyById[productId] || 0;
-  const newQty = currentQty + change;
+  const handleDummyQty = (productId, change, item) => {
+    const currentQty = dummyQtyById[productId] || 0;
+    const newQty = currentQty + change;
 
-  setDummyQtyById(prev => ({
-    ...prev,
-    [productId]: newQty
-  }));
-};
+    setDummyQtyById(prev => ({
+      ...prev,
+      [productId]: newQty
+    }));
+  };
 
 
   return (
@@ -143,64 +139,75 @@ const handleDummyQty = (productId, change, item) => {
         numColumns={2}
         removeClippedSubviews={false}
         ListHeaderComponent={
-          <View style={styles.dummyContainer}>
-            <FlatList
-              data={dummyMedicines}
-              keyExtractor={item => String(item.id)}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.dummyListContent}
-              renderItem={({ item }) => (
-                <View style={styles.dummyCardWrapper}>
-                  <View style={styles.productsCard}>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      onPress={() => navigation.navigate('ProductDetail', { item })}
-                    >
-                      <View style={styles.imageWrap}>
-                        <Image
-                          source={require('../images/medicine.jpg')}
-                          style={styles.productImage}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <View style={styles.cardBody}>
-                      <Text style={styles.productName} numberOfLines={1}>
-                        {item.name || item.title}
-                      </Text>
-                      <Text style={styles.productPrice}>₹{item.price}</Text>
-                      <View style={styles.qtyRow}>
-                        {dummyQtyById[item.id] > 0 ? (
-                          <>
-                            <ButtonWrapper
-                              title="-"
-                              style={styles.qtyButton}
-                              textStyle={styles.qtyButtonText}
-                              onPress={() => handleDummyQty(item.id, -1, item)}
+          <>
+            <View style={{ backgroundColor: theme.colors.white, paddingVertical: 10, width: "92%", alignSelf: 'center', borderRadius: 8 }}>
+              <View style={{ backgroundColor: "#f2e5c2",height:70,justifyContent:"center" }} >
+                <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 8, marginLeft: 26, color: theme.colors.button }}>Smartway Wellnes</Text>
+                <Text style={{ color: theme.colors.button, marginLeft: 26 }}>Premium Quality Products</Text>
+              </View>
+
+
+              <View style={styles.dummyContainer}>
+                <FlatList
+                  data={dummyMedicines}
+                  keyExtractor={item => String(item.id)}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.dummyListContent}
+                  renderItem={({ item }) => (
+
+                    <View style={styles.dummyCardWrapper}>
+                      <View style={styles.productsCard}>
+                        <TouchableOpacity
+                          activeOpacity={0.9}
+                          onPress={() => { }}
+                        >
+                          <View style={styles.imageWrap}>
+                            <Image
+                              source={require('../images/medicine.jpg')}
+                              style={styles.productImage}
                             />
-                            <Text style={styles.qtyText}>{dummyQtyById[item.id]}</Text>
-                            <ButtonWrapper
-                              title="+"
-                              style={styles.qtyButton}
-                              textStyle={styles.qtyButtonText}
-                              onPress={() => handleDummyQty(item.id, 1, item)}
-                            />
-                          </>
-                        ) : (
-                          <ButtonWrapper
-                            title="Add"
-                            style={styles.buyNowBtn}
-                            textStyle={styles.buyNowText}
-                            onPress={() => handleDummyQty(item.id, 1, item)}
-                          />
-                        )}
+                          </View>
+                        </TouchableOpacity>
+                        <View style={styles.cardBody}>
+                          <Text style={styles.productName} numberOfLines={1}>
+                            {item.name}
+                          </Text>
+                          <Text style={styles.productPrice}>₹{item.price}</Text>
+                          <View style={styles.qtyRow}>
+                            {dummyQtyById[item.id] > 0 ? (
+                              <>
+                                <ButtonWrapper
+                                  title="-"
+                                  style={styles.qtyButton}
+                                  textStyle={styles.qtyButtonText}
+                                  onPress={() => handleDummyQty(item.id, -1, item)}
+                                />
+                                <Text style={styles.qtyText}>{dummyQtyById[item.id]}</Text>
+                                <ButtonWrapper
+                                  title="+"
+                                  style={styles.qtyButton}
+                                  textStyle={styles.qtyButtonText}
+                                  onPress={() => handleDummyQty(item.id, 1, item)}
+                                />
+                              </>
+                            ) : (
+                              <ButtonWrapper
+                                title="Add"
+                                style={styles.buyNowBtn}
+                                textStyle={styles.buyNowText}
+                                onPress={() => handleDummyQty(item.id, 1, item)}
+                              />
+                            )}
+                          </View>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
+                  )}
+                />
+              </View>
+            </View>
+          </>
         }
         ListFooterComponent={footerComponent}
         renderItem={({ item }) => {
@@ -265,10 +272,10 @@ const handleDummyQty = (productId, change, item) => {
           );
         }}
       />
-    {totalItems > 0 && (
-      
-        <View style={{position:'absolute',bottom:14,width:'90%',alignSelf:'center'}}>
-      <ButtonWrapper title={`View Cart (${totalItems})`} style={{backgroundColor:theme.colors.button}}  onPress={() => navigation.navigate('Cart')} />
+      {totalItems > 0 && (
+
+        <View style={{ position: 'absolute', bottom: 14, width: '90%', alignSelf: 'center' }}>
+          <ButtonWrapper title={`View Cart (${totalItems})`} style={{ backgroundColor: theme.colors.button }} onPress={() => navigation.navigate('Cart')} />
         </View>)}
     </>
   );
@@ -335,7 +342,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   dummyCardWrapper: {
-    width: 160,
+    width: 200,
   },
   listContent: {
     paddingBottom: 96,

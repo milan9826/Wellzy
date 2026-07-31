@@ -122,7 +122,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
             </View>
           </View>
           {(() => {
-            const productId = item.id || item._id || item.product_id;
+            const productId = item.id || item._id;
             const currentQty = qtyById[productId] || 0;
             const itemData = product || item;
 
