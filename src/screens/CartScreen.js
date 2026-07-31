@@ -30,15 +30,11 @@ const CartScreen = ({ navigation,route }) => {
   const reorderData=route.params?.item || null;
   console.log('reorderData:', reorderData);
 
-
   const cart = cartItems;
 
   const getProductId = item => {
     return item?.product_id ;//|| item?.id || item?._id || item?.product?.id || item?.product?._id;
   };
-
-
- 
 
   const getItemQty = item => {
     const productId = getProductId(item);
@@ -89,9 +85,6 @@ const CartScreen = ({ navigation,route }) => {
     fetchCart();
   }, []);
 
-
-
-
   const handleRemove = async () => {
     if (selectedItemToRemove) {
       const productId = getProductId(selectedItemToRemove);
@@ -121,7 +114,6 @@ const CartScreen = ({ navigation,route }) => {
       return { ...prev, [index]: newQty };
     });
   }
-
 
   const handleClearCart = async () => {
     try {

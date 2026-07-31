@@ -6,9 +6,6 @@ import { verifyOTP,sendOTP } from '../api/sendOTPApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
 
-
-
-
 const OTPVerificationScreen = ({ route, navigation }) => {
   // const [otp, setOtp] = useState(['', '', '', '' ]);
   const [otp, setOtp] = useState('');
@@ -28,8 +25,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
   { id: '2', label: 'Female' },
   { id: '3', label: 'Other' },
 ];
-
-    const handleVerifyOTP = async  () => {
+ const handleVerifyOTP = async  () => {
             const isNumberValid = /^[0-9]{6}$/.test(otp);
 
     if (otp === '') {
@@ -107,7 +103,6 @@ const handleResendOtp = async () => {
   }
 }
 
-
 return (
     <View style={styles.container}>
       <Text style={styles.title}>Verify OTP</Text>
@@ -170,8 +165,6 @@ return (
 )}
 
 <ButtonWrapper title="Change Number" style={[styles.button, { backgroundColor: "#FFFFFF", borderColor: theme.colors.danger, borderWidth: 1,marginTop:30 }]} textStyle={{color:theme.colors.button,fontWeight:600,fontSize:18}} onPress={() => navigation.replace('Login')} />
-
-
 
     </View>
 )

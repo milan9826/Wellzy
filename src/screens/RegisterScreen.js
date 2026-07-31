@@ -189,7 +189,6 @@ const RegisterScreen = ({ route }) => {
               </View>
             </View>
 
-
              <View style={styles.inputGroup}>
               <Text style={styles.label}>First Name</Text>
               <TextInputWraper
@@ -200,8 +199,6 @@ const RegisterScreen = ({ route }) => {
                 error={firstnameError}
               />
             </View>
-
-
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Last Name</Text>
@@ -237,10 +234,6 @@ const RegisterScreen = ({ route }) => {
                 keyboardType="numeric"
               />
             </View>
-
-           
-
-            
 
             {/* <View style={styles.inputGroup}>
               <Text style={styles.label}>Email</Text>

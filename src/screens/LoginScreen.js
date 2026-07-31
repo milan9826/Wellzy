@@ -68,7 +68,6 @@ const LoginScreen = ({ route }) => {
 
     }
 
-  
 
   //   try {
   //     setLoading(true);
@@ -205,8 +204,6 @@ const LoginScreen = ({ route }) => {
         </View>
       </Modal>
 
-
-{/*  */}
     </View>
 
   );

@@ -23,7 +23,6 @@ const CustomDrawer = props => {
       setConfirmVisible(false);
     }
   };
-
   const handleLogout = async () => {
     try {
       setLoading(true);

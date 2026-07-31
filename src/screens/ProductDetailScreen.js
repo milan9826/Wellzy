@@ -25,11 +25,6 @@ const ProductDetailScreen = ({ route, navigation }) => {
   const { qtyById, handleQty, addToCart } = useCart();
   let imgArray = false;
 
-
- 
-
-
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -56,9 +51,6 @@ const ProductDetailScreen = ({ route, navigation }) => {
   const handleImagePick = (index) => {
     setSelectedImage(IMAGE_BASE_URL + imageUri[index]);
   };
-
-
-
 
   return (
     <SafeAreaView style={styles.container}>

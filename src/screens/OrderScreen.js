@@ -10,7 +10,6 @@ import ProductCard from '../component/ProductCard';
 import { useCart } from '../context/CartContext';
 import { StatusBar } from 'react-native';
 import { getAllCategories } from '../api/categoriesApi/getAllCategories';
-import { FlatList } from 'react-native-gesture-handler';
 
 const OrderScreen = ({ navigation }) => {
   const parent = navigation.getParent()?.getState?.()?.type;
@@ -25,8 +24,6 @@ const OrderScreen = ({ navigation }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
   console.log("Selected category ID:", selectedCategoryId);
-
-
 
   const totalItems = cartItems?.length > 0 
     ? cartItems.length 
@@ -52,7 +49,6 @@ const OrderScreen = ({ navigation }) => {
     fetchProducts();
   }, []);
 
-
   const fetchCategories = async () => {
     try {
       const categories = await getAllCategories();
@@ -72,7 +68,6 @@ const OrderScreen = ({ navigation }) => {
     navigation.navigate('Cart');
   };
 
-
   const filteredProducts = data.filter(item => {
   const matchesSearch =
     searchText === '' ||
@@ -86,8 +81,6 @@ const OrderScreen = ({ navigation }) => {
   return matchesSearch && matchesCategory;
 });
 
-
- 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -148,8 +141,6 @@ const OrderScreen = ({ navigation }) => {
         </>
       )}
 
-      
-
       <ProductCard
         data={filteredProducts}
         navigation={navigation}
@@ -158,8 +149,6 @@ const OrderScreen = ({ navigation }) => {
         selectedCategoryId={selectedCategoryId}
         onSelectCategory={setSelectedCategoryId}
       />
-
-
     </SafeAreaView>
   );
 };

@@ -23,7 +23,6 @@ import { updateImage } from '../api/updateImageApi';
 import { IMAGE_BASE_URL } from '../api/apiConstant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const StoreScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -33,8 +32,6 @@ const StoreScreen = ({ navigation }) => {
   const [isNewImage, setIsNewImage] = useState(false);
   const [camModalVisible, setCamModalVisible] = useState(false);
   const [user,setUser] = useState({});
-
-
   const [usernameError, setUsernameError] = useState('');
   const [firstnameError, setFirstNameError] = useState('');
   const [lastnameError, setLastNameError] = useState('');

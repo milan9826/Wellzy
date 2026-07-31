@@ -22,7 +22,6 @@ import { getAddressApi } from '../api/addressApi/getAddressApi';
 
 const HomeScreen = ({ navigation }) => {
 
-
   const [location, setLocation] = useState('');
 
   const medicine = [
@@ -62,8 +61,6 @@ const HomeScreen = ({ navigation }) => {
   const [camModalVisible, setCamModalVisible] = useState(false);
   const [user, setUser] = useState({});
 
-  
-
   useEffect(() => {
     const fetchLocation = async () => {
       try {
@@ -85,7 +82,6 @@ const HomeScreen = ({ navigation }) => {
 
     fetchLocation();
   }, []);
-
 
 
   const handleCamAndImagePicker = () => {
@@ -130,8 +126,6 @@ const HomeScreen = ({ navigation }) => {
       handleImagePicker(launchImageLibrary);
     }, 400);
   };
-
-  
 
   return (
     <SafeAreaView style={styles.container}>

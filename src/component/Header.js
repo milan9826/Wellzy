@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 3,
     fontWeight: 'bold',
+    alignSelf:"center"
   },
   headerTextValue: {
     color: '#fff',

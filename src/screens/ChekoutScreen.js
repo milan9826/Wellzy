@@ -6,6 +6,8 @@ import { theme } from '../theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from 'react-native/types_generated/index';
 import ButtonWrapper from '../component/Button';
+import { useCart } from '../context/CartContext';
+
 
 const CheckoutScreen = ({ route, navigation }) => {
     const { cartItems } = route?.params || {};
@@ -16,11 +18,14 @@ const CheckoutScreen = ({ route, navigation }) => {
     const subtotal = Number(cartItems?.total || cartItems?.totalAmount);
     const deliveryCharge = selectedDelivery === 'express' ? 159 : 0;
     const totalAmount = subtotal + deliveryCharge;
+    const {setCartItems , fetchCart} = useCart();
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleCloseModal = () => {
         setModalVisible(false);
+        setCartItems([]); // Clear the cart items
+        fetchCart(); // Fetch the updated cart state
         navigation.navigate('OrderTracking');
     }
 
