@@ -9,6 +9,8 @@ import { getProduct } from '../api/productApi/getProductApi';
 import ProductCard from '../component/ProductCard';
 import { useCart } from '../context/CartContext';
 import { StatusBar } from 'react-native';
+import { getAllCategories } from '../api/categoriesApi/getAllCategories';
+import { FlatList } from 'react-native-gesture-handler';
 
 const OrderScreen = ({ navigation }) => {
   const parent = navigation.getParent()?.getState?.()?.type;
@@ -17,10 +19,18 @@ const OrderScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
-const [cartLength, setCartLength] = useState(0);
+  const [cartLength, setCartLength] = useState(0);
   const { cartItems, setCartItems, qtyById, setQtyById } = useCart();
+  const [productCategories, setProductCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
-  const totalItems = Object.values(qtyById).filter(qty => qty > 0).length;
+  console.log("Selected category ID:", selectedCategoryId);
+
+
+
+  const totalItems = cartItems?.length > 0 
+    ? cartItems.length 
+    : Object.values(qtyById).filter(qty => qty > 0).length;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,20 +52,42 @@ const [cartLength, setCartLength] = useState(0);
     fetchProducts();
   }, []);
 
-   
+
+  const fetchCategories = async () => {
+    try {
+      const categories = await getAllCategories();
+     
+      setProductCategories(categories);
+      console.log('Fetched categories:', categories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const handleCartPress = () => {
     navigation.navigate('Cart');
   };
 
-  const filteredProducts = data.filter(item =>
-    (item.name )
-      .toLowerCase()
-      .includes(searchText.toLowerCase()),
-  );
 
-  
+  const filteredProducts = data.filter(item => {
+  const matchesSearch =
+    searchText === '' ||
+    item.name.toLowerCase().includes(searchText.toLowerCase());
 
+  const matchesCategory =
+    selectedCategoryId === 'all' ||
+    item.category_id == selectedCategoryId;
+    console.log('Filtering product:', item.name, 'Category ID:', item.category_id, 'Selected Category ID:', selectedCategoryId, 'Matches Category:', matchesCategory);
+
+  return matchesSearch && matchesCategory;
+});
+
+
+ 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -70,12 +102,11 @@ const [cartLength, setCartLength] = useState(0);
               // lefticon={() => navigation.openDrawer()}
               // righticon={true}
               // righticonname="add-circle-outline"
-               secondBtn={true}
+              secondBtn={true}
               secondBtnicon="cart-outline"
               secondBtnPress={handleCartPress}
+              secondBtnBadge={totalItems}
             />
-
-           
           </View>
           <View style={styles.searchInputContainer}>
             <TextInputWraper
@@ -96,17 +127,13 @@ const [cartLength, setCartLength] = useState(0);
               icon="arrow-back"
               onPress={() => navigation.navigate('AddUpdate')}
               lefticon={() => navigation.goBack()}
-              righticon={true}
-              righticonname="add-circle-outline"
+              // righticon={true}
+              // righticonname="add-circle-outline"
               secondBtn={true}
               secondBtnicon="cart-outline"
               secondBtnPress={handleCartPress}
+              secondBtnBadge={totalItems}
             />
-            {totalItems > 0 && (
-              <View style={styles.cartBadge}>
-                <Text style={styles.cartBadgeText}>{totalItems}</Text>
-              </View>
-            )}
           </View>
           <View style={styles.searchInputContainer}>
             <TextInputWraper
@@ -121,17 +148,18 @@ const [cartLength, setCartLength] = useState(0);
         </>
       )}
 
-      {searchText.trim() !== '' ? (
-        <ProductCard
-          data={filteredProducts}
-          navigation={navigation}
-        />
-      ) : (
-        <ProductCard
-          data={data}
-          navigation={navigation}
-        />
-      )}
+      
+
+      <ProductCard
+        data={filteredProducts}
+        navigation={navigation}
+        totalItems={totalItems}
+        productCategories={productCategories}
+        selectedCategoryId={selectedCategoryId}
+        onSelectCategory={setSelectedCategoryId}
+      />
+
+
     </SafeAreaView>
   );
 };
@@ -238,21 +266,24 @@ const styles = StyleSheet.create({
   },
 
   qtyButton: {
-    backgroundColor: '#111827',
+    backgroundColor: '#FFFFFF',
     width: 32,
     height: 32,
     minWidth: 32,
     minHeight: 32,
-    borderRadius: 8,
+    maxHeight: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 0,
     paddingHorizontal: 0,
   },
   qtyButtonText: {
-    color: '#FFFFFF',
+    color: '#374151',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '500',
     lineHeight: 20,
   },
   qtyText: {
@@ -260,25 +291,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
     minWidth: 24,
-    textAlign: 'center',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 74,
-    backgroundColor: '#EF4444',
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-    zIndex: 10,
-  },
-  cartBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: 'bold',
     textAlign: 'center',
   },
   buyNowBtn: {

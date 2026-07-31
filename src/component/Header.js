@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { theme } from '../theme';
 
 const Header = ({
   title,
@@ -14,6 +15,7 @@ const Header = ({
   secondBtn,
   secondBtnPress,
   secondBtnicon,
+  secondBtnBadge,
   textValue,
   titleStyle,
 }) => {
@@ -47,6 +49,11 @@ const Header = ({
         {secondBtn ? (
           <TouchableOpacity style={styles.seconDBtn} onPress={secondBtnPress}>
             <Ionicons name={secondBtnicon} size={24} color="#fff" />
+            {secondBtnBadge > 0 && (
+              <View style={styles.cartBadge}>
+                <Text style={styles.cartBadgeText}>{secondBtnBadge}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         ) : null}
 
@@ -109,10 +116,32 @@ const styles = StyleSheet.create({
   seconDBtn: {
     width: 35,
     height: 35,
-    borderRadius: 15,
+    borderRadius: 17.5,
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: theme.colors.button,
+    borderRadius: 9,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 1.5,
+    borderColor: '#ffffff',
+    zIndex: 10,
+  },
+  cartBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   headerActions: {
     flexDirection: 'row',

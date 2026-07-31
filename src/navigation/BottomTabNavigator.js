@@ -16,11 +16,11 @@ const BottomTabNavigator = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#141618',
+          backgroundColor: '#fff',
           borderTopWidth: 0,
           height: 60,
         },
-        tabBarActiveTintColor: '#fff',
+        tabBarActiveTintColor: 'rgb(255, 94, 35)',
         tabBarInactiveTintColor: '#888',
         tabBarLabelStyle: {
           fontSize: 12,
@@ -66,7 +66,7 @@ const BottomTabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Store"
+        name="Profile"
         component={StoreScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

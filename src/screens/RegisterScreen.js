@@ -7,226 +7,191 @@ import {
   ScrollView,
   Modal,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputWraper from '../component/TextInput';
 import ButtonWrapper from '../component/Button';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@react-native-vector-icons/ionicons';
-import signUp from '../api/authApi';
-import RadioGroup from 'react-native-radio-buttons-group';
-import { useMemo } from 'react';
 import { registerUser } from '../api/registerUserApi';
+import { theme } from '../theme';
 
+const GENDER_OPTIONS = ['Male', 'Female', 'Other'];
 
 const RegisterScreen = ({ route }) => {
+  const user=route.params?.response?.user || {};
   const [firstname, SetFirstName] = useState('');
   const [lastname, SetLastName] = useState('');
-  const [email, SetEmail] = useState('');
-  const [number, SetNumber] = useState('');
+  // const [email, SetEmail] = useState('');
+  // const [number, SetNumber] = useState('');
+  const [gender, setGender] = useState('Male');
+  const [weight, SetWeight] = useState('');
+  const [age, SetAge] = useState('');
 
-  const navigation = useNavigation();
-  const options = useMemo(() => [
-    { id: '1', label: 'Male' },
-    { id: '2', label: 'Female' },
-    { id: '3', label: 'Other' },
-  ], []);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [firstnameError, setFirstNameError] = useState('');
   const [lastnameError, setLastNameError] = useState('');
   const [emailError, setEmailError] = useState('');
-
-  const [gender, setGender] = useState(['Male', 'Female', 'Other']);
-  const [weight, SetWeight] = useState('');
-  const [age, SetAge] = useState('');
-  const [loading, setLoading] = useState(false);
+  // const [numberError, setNumberError] = useState(user?.mobile_number );
   const [weightError, setWeightError] = useState('');
   const [ageError, setAgeError] = useState('');
-  const [numberError, setNumberError] = useState('');
 
-  const countryCode = '+91';
-  const token = route.params?.response?.token || '';
+  const navigation = useNavigation();
 
-
-
-
+  const number=user?.mobile_number || route.params?.response?.mobile_number || '';
+  console.log('User number:', number);
 
   const handleRegister = async () => {
-    // Validate name
-    // if (name === '') {
-    //   setNameError('Please enter your name');
-    //   return;
-    // } else if (!/^[a-zA-Z0-9_]{3,}$/.test(name)) {
-    //   setNameError(
-    //     'Name must be at least 3 characters long and can only contain letters, numbers, and underscores',
-    //   );
-    //   return;
-    // } else {
-    //   setNameError('');
-    // }
+    let isValid = true;
 
-    // // Validate email
-    // if (email === '') {
-    //   setEmailError('Please enter your email');
-    //   return;
-    // } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    //   setEmailError('Please enter a valid email address');
-    //   return;
-    // } else {
-    //   setEmailError('');
-    // }
-
-    // // Validate password
-    // const isPasswordValid =
-    //   /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password);
-    // const isConfirmPasswordValid =
-    //   /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(confirmPassword);
-
-    // if (password === '') {
-    //   setPasswordError('Please enter your password');
-    //   setConfirmPasswordError('Please enter confirm your password');
-    //   return;
-    // } else if (!isPasswordValid) {
-    //   setPasswordError(
-    //     'Password must contain at least one uppercase letter and one special character and be between 8 to 20 characters long',
-    //   );
-    //   setConfirmPasswordError('');
-    //   return;
-    // } else {
-    //   setPasswordError('');
-    // }
-
-    // if (confirmPassword === '') {
-    //   setConfirmPasswordError('Please enter confirm your password');
-    //   return;
-    // } else if (!isConfirmPasswordValid) {
-    //   setConfirmPasswordError(
-    //     'Confirm Password must contain at least one uppercase letter and one special character and be between 8 to 20 characters long',
-    //   );
-    //   return;
-    // } else if (password !== confirmPassword) {
-    //   setPasswordError('Passwords do not match');
-    //   setConfirmPasswordError('Passwords do not match');
-    //   return;
-    // } else {
-    //   setConfirmPasswordError('');
-    // }
-
-    // const data = {
-    //   platform: 1,
-    //   username: name,
-    //   email,
-    //   password,
-    // };
-
-    // try {
-    //   setLoading(true);
-    //   await signUp(data);
-    //   await AsyncStorage.setItem('name', name);
-    //   await AsyncStorage.setItem('email', email);
-    //   await AsyncStorage.setItem('password', password);
-    //   navigation.replace('Login', { name, email, password });
-    //   SetName('');
-    //   SetEmail('');
-    //   SetPassword('');
-    //   SetConfirmPassword('');
-    // } catch (error) {
-    //   console.log('Error during registration:', error);
-    // } finally {
-    //   setLoading(false);
-    // }
-
-
-
-    const isValid = true;
-
-    if (firstname === '') {
+    if (firstname.trim() === '') {
       setFirstNameError('Please enter your first name');
       isValid = false;
     } else {
       setFirstNameError('');
     }
 
-    if (lastname === '') {
+    if (lastname.trim() === '') {
       setLastNameError('Please enter your last name');
       isValid = false;
     } else {
       setLastNameError('');
     }
 
-    if (number === '') {
-      setNumberError('Please enter your number');
-      isValid = false;
-    } else if (!/^[0-9]{10}$/.test(number)) {
-      setNumberError('Please enter a valid 10-digit number');
-      isValid = false;
-    } else {
-      setNumberError('');
-    }
+    // if (number.trim() === '') {
+    //   setNumberError('Please enter your number');
+    //   isValid = false;
+    // } else if (!/^[0-9]{10}$/.test(number.trim())) {
+    //   setNumberError('Please enter a valid 10-digit number');
+    //   isValid = false;
+    // } else {
+    //   setNumberError('');
+    // }
 
-    if (weight === '') {
+    // if (email.trim() === '') {
+    //   setEmailError('Please enter your email');
+    //   isValid = false;
+    // } else if (
+    //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())
+    // ) {
+    //   setEmailError('Please enter a valid email address');
+    //   isValid = false;
+    // } else {
+    //   setEmailError('');
+    // }
+
+    if (weight.trim() === '') {
       setWeightError('Please enter your body weight');
       isValid = false;
-    } else if (!/^[0-9]+$/.test(weight)) {
+    } else if (!/^[0-9]+$/.test(weight.trim())) {
       setWeightError('Please enter a valid body weight');
       isValid = false;
     } else {
       setWeightError('');
     }
 
-    if (age === '') {
+    if (age.trim() === '') {
       setAgeError('Please enter your age');
       isValid = false;
-    } else if (!/^[0-9]+$/.test(age)) {
+    } else if (!/^[0-9]+$/.test(age.trim())) {
       setAgeError('Please enter a valid age');
       isValid = false;
     } else {
       setAgeError('');
     }
 
-     const regData = {
-      "role": "Customer",
-      "mobile_number": number,
-      "country_code": "+91",
-      "gender": gender,
-      "age": age,
-      "body_weight": weight,
-      "first_name": firstname,
-      "last_name": lastname,
-      "email": email
+    if (!isValid) return;
+
+    const regData = {
+      role: 'Customer',
+      mobile_number: number ,
+      country_code: '+91',
+      gender: gender,
+      age: age,
+      body_weight: weight,
+      first_name: firstname,
+      last_name: lastname,
+    };
+
+    try {
+      setLoading(true);
+      const response = await registerUser(regData);
+      if (response) {
+        if (response.token) {
+          await AsyncStorage.setItem('token', response.token);
+        }
+        if (response.user) {
+          await AsyncStorage.setItem('name', response.user.name || firstname);
+          await AsyncStorage.setItem('user', JSON.stringify(response.user));
+        }
+        navigation.navigate('Drawer', {
+          screen: 'Tabs',
+          params: {
+            screen: 'Home',
+          },
+        });
+      }
+    } catch (error) {
+      console.log('Error during registration:', error);
+    } finally {
+      setLoading(false);
     }
-    if (isValid) {
-      const response=await registerUser(regData);
-            await AsyncStorage.setItem('token', response.token);
-            await AsyncStorage.setItem('name', response.user.name);
-            await AsyncStorage.setItem('user', JSON.stringify(response.user));
-
-      navigation.navigate('Drawer', {
-        screen: 'Tabs',
-        params: {
-          screen: 'Home', 
-        },
-      });
-    }
-
-   
-
-
-
-
-
-
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.mainContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Tell us about yourself</Text>
+            <Text style={styles.subtitle}>
+              Please provide your details to continue
+            </Text>
+          </View>
+
           <View style={styles.formContainer}>
-            <Text style={styles.title}>Register</Text>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>FirstName</Text>
+              <Text style={styles.label}>Gender</Text>
+              <View style={styles.genderContainer}>
+                {GENDER_OPTIONS.map(item => {
+                  const isSelected = gender === item;
+                  return (
+                    <TouchableOpacity
+                      key={item}
+                      style={[
+                        styles.genderOption,
+                        isSelected
+                          ? styles.genderOptionSelected
+                          : styles.genderOptionUnselected,
+                      ]}
+                      onPress={() => setGender(item)}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          styles.genderText,
+                          isSelected
+                            ? styles.genderTextSelected
+                            : styles.genderTextUnselected,
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+
+
+             <View style={styles.inputGroup}>
+              <Text style={styles.label}>First Name</Text>
               <TextInputWraper
                 placeholder="Enter First Name here..."
                 style={styles.input}
@@ -235,6 +200,7 @@ const RegisterScreen = ({ route }) => {
                 error={firstnameError}
               />
             </View>
+
 
 
             <View style={styles.inputGroup}>
@@ -248,45 +214,6 @@ const RegisterScreen = ({ route }) => {
               />
             </View>
 
-
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <TextInputWraper
-                placeholder="Enter Email Here...."
-                style={styles.input}
-                value={email}
-                onChangeText={SetEmail}
-              />
-            </View>
-
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Number</Text>
-              <Text style={styles.country}>+91</Text>
-              <TextInputWraper
-                placeholder="Enter Number Here...."
-                style={styles.numInput}
-                value={number}
-                onChangeText={SetNumber}
-                keyboardType="numeric"
-                error={numberError}
-              />
-            </View>
-            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Body Weight</Text>
-              <TextInputWraper
-                placeholder="Enter Body Weight here..."
-                style={styles.input}
-                value={weight}
-                onChangeText={SetWeight}
-                error={weightError}
-                keyboardType="numeric"
-              />
-
-            </View>
-
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Age</Text>
               <TextInputWraper
@@ -297,33 +224,60 @@ const RegisterScreen = ({ route }) => {
                 error={ageError}
                 keyboardType="numeric"
               />
-
-
-
             </View>
 
-
             <View style={styles.inputGroup}>
-
-              <Text style={styles.label}>Gender</Text>
-              <RadioGroup
-                radioButtons={options}
-                onPress={setGender}
-                selectedId={gender}
-                layout="row"
+              <Text style={styles.label}>Body Weight (kg)</Text>
+              <TextInputWraper
+                placeholder="Enter Body Weight here..."
+                style={styles.input}
+                value={weight}
+                onChangeText={SetWeight}
+                error={weightError}
+                keyboardType="numeric"
               />
             </View>
 
+           
 
+            
 
+            {/* <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <TextInputWraper
+                placeholder="Enter Email Here...."
+                style={styles.input}
+                value={email}
+                onChangeText={SetEmail}
+                error={emailError}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View> */}
+{/* 
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Number</Text>
+              <View style={styles.numberInputWrapper}>
+                <Text style={styles.countryCode}>+91</Text>
+                <TextInputWraper
+                  placeholder="Enter Number Here...."
+                  style={styles.numInput}
+                  value={number}
+                  onChangeText={SetNumber}
+                  keyboardType="numeric"
+                  maxLength={10}
+                  error={numberError}
+                  containerStyle={{ flex: 1 }}
+                />
+              </View>
+            </View> */}
 
             <ButtonWrapper
-              title="Register"
+              title="Continue"
               onPress={handleRegister}
               style={[styles.button, loading && styles.buttonDisabled]}
               disabled={loading}
             />
-
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -331,7 +285,7 @@ const RegisterScreen = ({ route }) => {
       <Modal transparent animationType="fade" visible={loading}>
         <View style={styles.loadingOverlay}>
           <View style={styles.loadingBox}>
-            <ActivityIndicator size="large" color="#141618" />
+            <ActivityIndicator size="large" color={theme.colors.button} />
             <Text style={styles.loadingText}>Please wait...</Text>
           </View>
         </View>
@@ -341,53 +295,128 @@ const RegisterScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
-    transparent: true,
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: 40,
   },
-  formContainer: {
-    width: '80%',
-  },
-  inputGroup: {
-    marginBottom: 4,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 6,
+  headerContainer: {
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 12,
+    color: '#111827',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: theme.colors.label || '#6B7280',
+  },
+  formContainer: {
+    width: '100%',
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  genderOption: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  genderOptionSelected: {
+    backgroundColor: theme.colors.button,
+    borderWidth: 0,
+    shadowColor: theme.colors.button,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  genderOptionUnselected: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  genderText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  genderTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  genderTextUnselected: {
+    color: '#374151',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#151212',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    fontSize: 15,
+    color: '#1F2937',
+    backgroundColor: '#FFFFFF',
+  },
+  numberInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    paddingLeft: 14,
+  },
+  countryCode: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#374151',
+    marginRight: 4,
   },
   numInput: {
-    borderWidth: 1,
-    borderColor: '#151212',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
-    width: '90%',
-    marginLeft: 40, // Adjust this value to position the input field correctly
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#1F2937',
+    borderRadius: 12,
   },
   button: {
+    marginTop: 16,
     marginVertical: 10,
-    backgroundColor: '#141618',
+    backgroundColor: theme.colors.button,
+    borderRadius: 12,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: theme.colors.button,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   loadingOverlay: {
     flex: 1,
@@ -410,13 +439,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#374151',
     fontWeight: '500',
-  },
-  country: {
-    position: 'absolute',
-    top: 40,
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#151212',
   },
 });
 

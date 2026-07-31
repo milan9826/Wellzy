@@ -1,8 +1,11 @@
 
 import React from 'react';
-import { View, Text, FlatList,StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import Header from '../component/Header';
 import ButtonWrapper from '../component/Button';
+import { theme } from '../theme';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 const YourOrderScreen = ({ navigation }) => {
     const orders = [
         {
@@ -38,36 +41,42 @@ const YourOrderScreen = ({ navigation }) => {
         }
     ];
     return (
-        <View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
             <Header title="Your Order" lefticon={() => navigation.goBack()} navigation={navigation} icon="arrow-back" />
+            <View style={{width:"80%",alignSelf:"center",marginTop:20}}>
+                <ButtonWrapper title="+ Add new order" onPress={() => navigation.navigate('OrderTracking')} style={{backgroundColor:theme.colors.button}} textStyle={{ fontSize: 18, fontWeight: '500', color: '#f3f1f1' }} />
+            </View>
             <FlatList
                 data={orders}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={{ backgroundColor: '#FFFFFF', borderColor: '#e0e0e0', borderWidth: 1, borderRadius: 16, padding: 16, marginHorizontal: 16, marginTop: 12 }}>
 
+
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={{ fontSize: 16, fontWeight: '600', color: '#8d8d8e' }}> {item.date}</Text>
-                            <View style={{backgroundColor:"#d9f7e5",width:80,height:30,justifyContent:"center",alignItems:"center",borderRadius:6}}>
+                            <View style={{ backgroundColor: "#d9f7e5", width: 80, height: 30, justifyContent: "center", alignItems: "center", borderRadius: 6 }}>
                                 <Text style={{ fontSize: 16, fontWeight: '600', color: '#0df055', borderRadius: 6 }}>{item.status}</Text>
                             </View>
                         </View>
-                            <View  style={{ flexDirection: 'row', marginTop: 8, }}>
+                        <View style={{ flexDirection: 'row', marginTop: 8, }}>
 
-                        {item.medicines.map((medicine, index) => (
+                            {item.medicines.map((medicine, index) => (
                                 <Text key={index} style={{ fontSize: 14, color: '#111827', marginLeft: 4 }}>{medicine},</Text>
-                            
-                        ))}
+
+                            ))}
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '600', color: '#111827', marginTop: 8 }}> ₹{item.totalAmount}</Text>
-                        <ButtonWrapper title="Reorder" onPress={() => navigation.navigate('Cart',{item})} style={styles.reorderBtn} textStyle={styles.reorderText} />
-                            </View>
-                        <Text style={{ fontSize: 16, fontWeight: '600', color: '#8d8d8e', marginTop: 8 }}>Report an issue</Text>
+                            <Text style={{ fontSize: 16, fontWeight: '600', color: '#111827', marginTop: 8 }}> ₹{item.totalAmount}</Text>
+                           <ButtonWrapper title="Reorder" onPress={() => navigation.navigate('Cart', { item })} style={styles.reorderBtn} textStyle={styles.reorderText}  />
+
+                        </View>
+                                  <Text style={{ fontSize: 16, fontWeight: '600', color: '#8d8d8e', marginTop: 8 }}>Report an issue</Text>
+
                     </View>
                 )}
             />
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -75,21 +84,21 @@ const YourOrderScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 
     reorderBtn: {
-  width: 110,
-  height: 38,
-  borderWidth: 1,
-  borderColor: '#D9D9D9',
-  borderRadius: 14,
-  backgroundColor: '#FFFFFF',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: 8,
-},
+        width: 110,
+        height: 30,
+        borderWidth: 1,
+        borderColor: '#D9D9D9',
+        borderRadius: 14,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 4,
+    },
 
-reorderText: {
-  fontSize: 18,
-  fontWeight: '500',
-  color: '#222222',
-},
+    reorderText: {
+        fontSize: 18,
+        fontWeight: '500',
+        color: '#222222',
+    },
 })
 export default YourOrderScreen;

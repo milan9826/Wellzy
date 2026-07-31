@@ -14,7 +14,7 @@ export const theme = {
     label: '#6B7280',
     border: '#e6603e',
     logoText: '#3bbec0',
-    button:"#a56b19",
+    button:"#854F0B",
     error: '#EF4444',
   },
 }

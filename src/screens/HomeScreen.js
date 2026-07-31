@@ -139,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
       <Header
         title={location || 'Not Available'}
         navigation={navigation}
-        onPress={() => navigation.navigate('Store')}
+        onPress={() => navigation.navigate('Profile')}
          lefticon={() => navigation.openDrawer()}
          icon="location-sharp"
         righticon={true}
@@ -264,6 +264,16 @@ const HomeScreen = ({ navigation }) => {
             </View>
           ))}
         </ScrollView>
+
+        <View style={styles.storeCard}>
+          <View style={styles.storeAvatar}>
+            <Text style={styles.storeAvatarText}>S</Text>
+          </View>
+          <View style={styles.storeInfo}>
+            <Text style={styles.storeName}>Sharma medical store</Text>
+            <Text style={styles.storeDetails}>0.4 km · open now</Text>
+          </View>
+        </View>
       </ScrollView>
 
       <Modal
@@ -410,6 +420,43 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#374151',
     textAlign: 'center',
+  },
+  storeCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  storeAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#E6F4EA',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  storeAvatarText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  storeInfo: {
+    marginLeft: 12,
+  },
+  storeName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  storeDetails: {
+    fontSize: 13,
+    color: '#9CA3AF',
+    marginTop: 2,
   },
 });
 export default HomeScreen;

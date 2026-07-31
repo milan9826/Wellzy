@@ -26,6 +26,9 @@ const ProductDetailScreen = ({ route, navigation }) => {
   let imgArray = false;
 
 
+ 
+
+
 
   useEffect(() => {
     const fetchProduct = async () => {

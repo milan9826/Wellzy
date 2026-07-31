@@ -191,14 +191,14 @@ const StoreScreen = ({ navigation }) => {
       <SafeAreaView style={{ flex: 1 }}>
         {isInDrawer ? (
           <Header
-            title="Store"
+            title="My Retailer"
             navigation={navigation}
              icon="arrow-back"
              lefticon={() => navigation.goBack()}
           />
         ) : (
           <Header
-            title="Store"
+            title="My Retailer"
             navigation={navigation}
             icon="arrow-back"
             lefticon={() => navigation.goBack()}
@@ -223,7 +223,7 @@ const StoreScreen = ({ navigation }) => {
                     <Image source={{ uri: profileImage }} style={styles.profile} />
                   ) : (
                     <View style={styles.profile}>
-                      <Text style={styles.initialText}>{user.name[0]}</Text>
+                      <Text style={styles.initialText}>{user.name ? user.name[0] : 'U'}</Text>
                     </View>
                   )}
                   <TouchableOpacity
@@ -292,52 +292,87 @@ const StoreScreen = ({ navigation }) => {
                 )}
               </View>
             ) : (
-
-              <View style={{ width: '100%', alignItems: 'center',marginTop: 20 }}>
-                
-                <View style={styles.profileWrapper}>
-                  {profileImage ? (
-                    <Image source={{ uri: profileImage }} style={styles.profile} />
-                  ) : (
-                    <View style={styles.profile}>
-                      <Text style={styles.initialText}>{user.first_name ? user.first_name[0] : 'U'}</Text>
+              <View style={styles.container}>
+                {/* Profile Card */}
+                <View style={styles.profileCard}>
+                  <View style={styles.cardHeaderRow}>
+                    <View style={styles.avatarContainer}>
+                      {profileImage ? (
+                        <Image source={{ uri: profileImage }} style={styles.avatarImage} />
+                      ) : (
+                        <View style={styles.avatarPlaceholder}>
+                          <Text style={styles.avatarInitial}>
+                            {(firstname?.[0] || user.first_name?.[0] || 'M').toUpperCase()}
+                          </Text>
+                        </View>
+                      )}
+                      <TouchableOpacity
+                        style={styles.editPencilBadge}
+                        onPress={() => setEdit(true)}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons name="pencil" size={14} color="#ffffff" />
+                      </TouchableOpacity>
                     </View>
-                  )}
+
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.fullNameText}>
+                        {`${firstname || user.first_name || ''} ${lastname || user.last_name || ''}`.trim() || user.name || user.username || 'User Profile'}
+                      </Text>
+                    
+                    </View>
+                  </View>
+
+                  <View style={styles.cardDivider} />
+
+                  <View style={styles.detailsGrid}>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>First Name</Text>
+                      <Text style={styles.detailValue}>{firstname || user.first_name || '-'}</Text>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>Last Name</Text>
+                      <Text style={styles.detailValue}>{lastname || user.last_name || '-'}</Text>
+                    </View>
+                  </View>
                 </View>
 
-                <Text style={styles.profileTitle}>
-                  {user.email || 'User Profile'}
-                </Text>
-                   <TouchableOpacity
-                    style={[styles.pencilButton, { top: 10, right:130  }]}
-                    onPress={() => setEdit(true)}
+                <View style={styles.retailerCard}>
+                  <Text style={styles.retailerCardTitle}>Why this is your retailer</Text>
+                  <Text style={styles.retailerCardText}>
+                    You were matched to this store as part of the Smartway network near you. Your orders are fulfilled here first, with nearby stores as backup.
+                  </Text>
+                </View>
+
+                <View style={styles.actionList}>
+                  <TouchableOpacity
+                    style={styles.actionCard}
+                    onPress={() => navigation.navigate('YourOrder')}
+                    activeOpacity={0.7}
                   >
-                    <Ionicons name="pencil" size={22} color="#fff" />
+                    <View style={styles.actionLeft}>
+                      <View style={styles.actionIconContainer}>
+                        <Ionicons name="bag-handle-outline" size={22} color="#1C2FDB" />
+                      </View>
+                      <Text style={styles.actionTitle}>Your Orders</Text>
+                    </View>
+                    <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" />
                   </TouchableOpacity>
-                <View style={styles.detailCard}>
-                
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>First Name:</Text>
-                    <Text style={styles.detailValue}>{user.first_name || 'N/A'}</Text>
-                  </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>Last Name:</Text>
-                    <Text style={styles.detailValue}>{user.last_name || 'N/A'}</Text>
-                  </View>
 
-
-                </View>
-
-                <View  style={{ width: '80%', marginTop: 20, gap: 10,flexDirection: 'row', alignSelf:"center",backgroundColor: '#F9FAFB', padding: 16, borderRadius: 12 }}>
-                  <Ionicons name="cart-outline" size={30} color="#b3b7be" style={{ marginTop:10 }} />
-                  <TouchableOpacity onPress={() => navigation.navigate('YourOrder')}>
-                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#111827', marginTop: 10 }}>
-                      Your Orders
-                    </Text>
+                  <TouchableOpacity
+                    style={styles.actionCard}
+                    onPress={() => navigation.navigate('OrderTracking')}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.actionLeft}>
+                      <View style={styles.actionIconContainer}>
+                        <Ionicons name="location-outline" size={22} color="#1C2FDB" />
+                      </View>
+                      <Text style={styles.actionTitle}>Track your Orders</Text>
+                    </View>
+                    <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" />
                   </TouchableOpacity>
                 </View>
-
-                
               </View>
             )}
           </ScrollView>
@@ -390,6 +425,141 @@ const StoreScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    alignItems: 'center',
+    gap: 16,
+  },
+  profileCard: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  avatarContainer: {
+    position: 'relative',
+    width: 68,
+    height: 68,
+  },
+  avatarImage: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: '#F3F4F6',
+  },
+  avatarPlaceholder: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: '#141618',
+    justifycontent: 'center',
+    alignItems: 'center',
+  },
+  avatarInitial: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    marginTop: 12,
+    fontWeight: 'bold',
+  },
+  editPencilBadge: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#1C2FDB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  nameContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  fullNameText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  usernameText: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: '#F3F4F6',
+    marginVertical: 14,
+  },
+  detailsGrid: {
+    gap: 10,
+  },
+  retailerCard: {
+    width: '100%',
+    backgroundColor: '#EAF7EC',
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#C6E7C6',
+  },
+  retailerCardTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1E4620',
+    marginBottom: 6,
+  },
+  retailerCardText: {
+    fontSize: 13.5,
+    color: '#2E6930',
+    lineHeight: 20,
+  },
+  actionList: {
+    width: '100%',
+    gap: 12,
+  },
+  actionCard: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  actionLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  actionIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EEF2FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
   profile: {
     width: 100,
     height: 100,
@@ -444,21 +614,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
   },
   iconstyle: {
-    
     color: '#b3b7be',
   },
   inputGroup: {
     width: '80%',
     marginBottom: 16,
-  },
-  detailCard: {
-    width: '80%',
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    gap: 12,
   },
   detailRow: {
     flexDirection: 'row',

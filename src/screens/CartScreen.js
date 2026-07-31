@@ -144,7 +144,7 @@ const CartScreen = ({ navigation,route }) => {
         navigation={navigation}
         title="Your Cart"
         icon="arrow-back"
-        lefticon={() => navigation.goBack()}
+        lefticon={() => navigation.navigate('Drawer', { screen: 'Orders' })}
         titleStyle={styles.titleStyle} 
       />
       {loading ? (
@@ -159,10 +159,13 @@ const CartScreen = ({ navigation,route }) => {
             contentContainerStyle={styles.container}
             showsVerticalScrollIndicator={false}
           >
-
+             {(!reorderData && cart.length === 0) ? null : (
+                <>
           <CardWrapper title="Fulfilled by Sharma Medical Store"  />
-          <CardWrapper title="Safety Check Flagged" titleColor="#f0893bda"  cardStyle={{backgroundColor:"#f3dcb0"}} des={true} content="Telmisartan and Aspirin can both affect blood pressure when combined. Your pharmacist will review this before confirming."/>
-
+          <CardWrapper title="Safety Check Flagged" titleColor="#f0893bda"  cardStyle={{backgroundColor:"#f3dcb0"}} 
+          des={true} content="Telmisartan and Aspirin can both affect blood pressure when combined. Your pharmacist will review this before confirming."/>
+          </>
+          )}
             {(!reorderData && cart.length === 0) ? (
               <View style={styles.emptyState}>
                 <Text style={styles.emptyTitle}>Your cart is empty</Text>
@@ -182,7 +185,7 @@ const CartScreen = ({ navigation,route }) => {
                       </Text>
                       <View style={styles.cardBottomRow}>
                         <Text style={styles.price}>
-                          {medicine.price ? `₹${medicine.price}` : ''}
+                          {medicine.price ? `₹${medicine.price}` : '₹56'}
                         </Text>
                         <View style={styles.quantityControls}>
                           <ButtonWrapper
