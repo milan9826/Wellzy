@@ -58,7 +58,7 @@ const BottomTabNavigator = () => {
       <Tab.Screen
         name="Orders"
         component={OrderScreen}
-        options={{
+         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" size={size} color={color} />
           ),

@@ -141,8 +141,8 @@ const ProductCard = ({
         ListHeaderComponent={
           <>
             <View style={{ backgroundColor: theme.colors.white, paddingVertical: 10, width: "92%", alignSelf: 'center', borderRadius: 8 }}>
-              <View style={{ backgroundColor: "#f2e5c2",height:70,justifyContent:"center" }} >
-                <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 8, marginLeft: 26, color: theme.colors.button }}>Smartway Wellnes</Text>
+              <View style={{ backgroundColor: "#f2e5c2",height:100,justifyContent:"center" }} >
+                <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 8, marginLeft: 26, color: theme.colors.button }}>Smartway Wellness</Text>
                 <Text style={{ color: theme.colors.button, marginLeft: 26 }}>Premium Quality Products</Text>
               </View>
 
@@ -275,7 +275,7 @@ const ProductCard = ({
       {totalItems > 0 && (
 
         <View style={{ position: 'absolute', bottom: 14, width: '90%', alignSelf: 'center' }}>
-          <ButtonWrapper title={`View Cart (${totalItems})`} style={{ backgroundColor: theme.colors.button }} onPress={() => navigation.navigate('Cart')} />
+          <ButtonWrapper title={`View Cart (${totalItems})`} style={{ backgroundColor: theme.colors.button }} onPress={() => navigation.replace('Cart')} />
         </View>)}
     </>
   );

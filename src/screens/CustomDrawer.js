@@ -25,6 +25,7 @@ const CustomDrawer = props => {
   };
   const handleLogout = async () => {
     try {
+      setConfirmVisible(false);
       setLoading(true);
       await logout();
     } catch (error) {
@@ -33,7 +34,7 @@ const CustomDrawer = props => {
       await AsyncStorage.removeMany(['flag', 'password', 'token']);
       setConfirmVisible(false);
       setLoading(false);
-      props.navigation.navigate('Login');
+      props.navigation.replace('Login');
     }
   };
 

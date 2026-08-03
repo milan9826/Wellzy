@@ -2,13 +2,13 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const ButtonWrapper = ({ title, onPress, style, textStyle, icon,disable,iconstyle }) => {
+const ButtonWrapper = ({ title, onPress, style, textStyle, icon, disabled, iconstyle }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.button, style]}
       activeOpacity={0.8}
-      disabled={disable}
+      disabled={disabled}
     >
       {title ? (
         <Text style={textStyle || styles.buttonText} numberOfLines={1}>
@@ -20,7 +20,7 @@ const ButtonWrapper = ({ title, onPress, style, textStyle, icon,disable,iconstyl
           name={icon}
           size={20}
           color="#FFFFFF"
-          style={[{ marginLeft: 8 }, iconstyle]}
+          style={[styles.icon, iconstyle]}
         />
       )}
     </TouchableOpacity>
@@ -38,6 +38,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#111827',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  icon: {
+    marginLeft: 8,
   },
   buttonText: {
     numberOfLines: 1,

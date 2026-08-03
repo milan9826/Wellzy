@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
-  // const [otp, setOtp] = useState(['', '', '', '' ]);
+  // const [otp, setOtp] = useState(['', '', '', '', ]);
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
   const usernumber = route.params.usernumber;
@@ -56,14 +56,14 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         await AsyncStorage.setItem('name', response.user.name);
         await AsyncStorage.setItem('user', JSON.stringify(response.user));
 
-        navigation.navigate('Drawer', {
+        navigation.replace('Drawer', {
           screen: 'Tabs',
           params: {
             screen: 'Home',
             
           },
         });
-      }
+      } 
 
         } catch (error) {
       console.error('Error verifying OTP:', error);

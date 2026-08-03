@@ -19,9 +19,7 @@ import { getProfile } from '../api/getProfile';
 import { updateProfile } from '../api/updateProfileApi';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
-import { updateImage } from '../api/updateImageApi';
-import { IMAGE_BASE_URL } from '../api/apiConstant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const StoreScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -29,7 +27,7 @@ const StoreScreen = ({ navigation }) => {
   const [firstname, setFirstName] = useState('');
   const [lastname, setLastName] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  const [isNewImage, setIsNewImage] = useState(false);
+  // const [isNewImage, setIsNewImage] = useState(false);
   const [camModalVisible, setCamModalVisible] = useState(false);
   const [user,setUser] = useState({});
   const [usernameError, setUsernameError] = useState('');
@@ -42,12 +40,12 @@ const StoreScreen = ({ navigation }) => {
   const validateInputs = () => {
     let isValid = true;
 
-    if (!username.trim()) {
-      setUsernameError('Username is required');
-      isValid = false;
-    } else {
-      setUsernameError('');
-    }
+    // if (!username.trim()) {
+    //   setUsernameError('Username is required');
+    //   isValid = false;
+    // } else {
+    //   setUsernameError('');
+    // }
 
     if (!firstname.trim()) {
       setFirstNameError('First name is required');
@@ -79,12 +77,21 @@ const StoreScreen = ({ navigation }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const raw = await AsyncStorage.getItem('user');
-        if (raw) {
-          setUser(JSON.parse(raw));
+        setInitialLoading(true);
+        const userData = await getProfile();
+
+        console.log('Fetched user data:', userData);
+        if (userData) {
+          setUser(userData);
+          setFirstName(userData.first_name || '');
+          setLastName(userData.last_name || '');
+          setName(userData.first_name || '');
+          
         }
-      } catch (e) {
-        console.warn('Failed to load user from storage', e);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      } finally {
+        setInitialLoading(false);
       }
     };
     loadUser();
@@ -127,53 +134,54 @@ const StoreScreen = ({ navigation }) => {
 
  
 
-  const fetchProfile = async () => {
-    try {
-      setInitialLoading(true);
-      const profileData = await getProfile();
-      if (profileData) {
-        setName(profileData.username || '');
-        setUsername(profileData.username || '');
-        setFirstName(profileData.firstname || '');
-        setLastName(profileData.lastname || '');
-        if (profileData.image) {
-          const imgUrl = profileData.image.startsWith('http')
-            ? profileData.image
-            : IMAGE_BASE_URL + profileData.image;
-          setProfileImage(imgUrl);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setInitialLoading(false);
-    }
-  };
+  // const fetchProfile = async () => {
+  //   try {
+  //     setInitialLoading(true);
+  //     const profileData = await getProfile();
+  //     if (profileData) {
+  //       setName(profileData.username || '');
+  //       setUsername(profileData.username || '');
+  //       setFirstName(profileData.first_name || '');
+  //       setLastName(profileData.last_name || '');
+  //       if (profileData.image) {
+  //         const imgUrl = profileData.image.startsWith('http')
+  //           ? profileData.image
+  //           : IMAGE_BASE_URL + profileData.image;
+  //         setProfileImage(imgUrl);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching profile:', error);
+  //   } finally {
+  //     setInitialLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  // useEffect(() => {
+  //   fetchProfile();
+  // }, []);
 
   const handleUpdateProfile = async () => {
     if (!validateInputs()) {
       return;
     }
+    const data={
+      first_name: firstname,
+      last_name: lastname,
+    };
+    console.log('Updating profile with data:', data);
     try {
       setLoading(true);
-      const response = await updateProfile(username, firstname, lastname);
-      if (isNewImage && profileImage) {
-        await updateImage(profileImage);
-        setIsNewImage(false);
-      }
-      setName(username);
+      const response = await updateProfile(data);
+      // if (isNewImage && profileImage) {
+      //   await updateImage(profileImage);
+      //   setIsNewImage(false);
+      // }
+    
       alert(response?.message || 'Profile updated successfully!');
       setEdit(false);
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        'Something went wrong';
-      alert(message);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -220,7 +228,7 @@ const StoreScreen = ({ navigation }) => {
                     <Image source={{ uri: profileImage }} style={styles.profile} />
                   ) : (
                     <View style={styles.profile}>
-                      <Text style={styles.initialText}>{user.name ? user.name[0] : 'U'}</Text>
+                      <Text style={styles.initialText}>{name ? name[0] : 'U'}</Text>
                     </View>
                   )}
                   <TouchableOpacity
@@ -233,7 +241,7 @@ const StoreScreen = ({ navigation }) => {
 
                 <Text style={styles.profileTitle}>{name}</Text>
 
-                <View style={styles.inputGroup}>
+                {/* <View style={styles.inputGroup}>
                   <Text style={styles.label}>Username</Text>
                   <TextInputWraper
                     placeholder="Enter Username Here ...."
@@ -242,7 +250,7 @@ const StoreScreen = ({ navigation }) => {
                     style={styles.input}
                     error={usernameError}
                   />
-                </View>
+                </View> */}
 
                 <View style={styles.inputGroup}>
                   <Text style={styles.label}>First Name</Text>
@@ -278,9 +286,6 @@ const StoreScreen = ({ navigation }) => {
                       style={styles.cancelBtn}
                       onPress={() => {
                         setEdit(false);
-                        setUsernameError('');
-                        setFirstNameError('');
-                        setLastNameError('');
                       }}
                     >
                       <Text style={styles.cancelBtnText}>Cancel</Text>
@@ -314,7 +319,7 @@ const StoreScreen = ({ navigation }) => {
 
                     <View style={styles.nameContainer}>
                       <Text style={styles.fullNameText}>
-                        {`${firstname || user.first_name || ''} ${lastname || user.last_name || ''}`.trim() || user.name || user.username || 'User Profile'}
+                        {`${ firstname } ${ lastname }`.trim()  || 'User Profile'}
                       </Text>
                     
                     </View>

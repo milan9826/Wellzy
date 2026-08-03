@@ -2,10 +2,7 @@ import { BASE_URL, API_KEY_HEADER, API_KEY_VALUE } from './apiConstant';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const apiClient = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    [API_KEY_HEADER]: API_KEY_VALUE,
-  },
+  baseURL: BASE_URL, 
 });
 
 export const getProfile = async () => {
@@ -14,14 +11,14 @@ export const getProfile = async () => {
     if (!token) {
       throw new Error('No token found in AsyncStorage');
     }
-    const response = await apiClient.get('/user-profile', {
+    const response = await apiClient.get('/auth/me', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const profileData = response.data.data;
-    //  console.log('Profile data fetched successfully:', response.data);
+    const profileData = response.data.user;
+      console.log('Profile data fetched successfully:', response.data);
 
     return profileData;
   } catch (error) {

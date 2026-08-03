@@ -129,6 +129,15 @@ const CartScreen = ({ navigation,route }) => {
     }
   };
 
+
+  const handleCheckout = () => {
+    if(cartItems.length === 0 && !reorderData){
+      alert('Your cart is empty. Please add items to proceed to checkout.');
+      return;
+    }
+    navigation.navigate('Checkout', { cartItems: reorderData ? reorderData : { cart, total } });
+  };
+
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -256,8 +265,8 @@ const CartScreen = ({ navigation,route }) => {
               title="Proceed to checkout"
               textStyle={styles.checkoutBtnText}
               style={styles.checkoutBtn}
-              onPress={() => navigation.navigate('Checkout', { cartItems: reorderData ? reorderData : {cart,total} })}
-              
+              onPress={handleCheckout}
+              //() => navigation.navigate('Checkout', { cartItems: reorderData ? reorderData : {cart,total} })
               activeOpacity={0.85}
             />
 

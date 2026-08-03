@@ -45,7 +45,7 @@ const OrderTracking = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <Header
         title="Order Tracking"
-        lefticon={() => navigation.goBack()}
+        lefticon={() => navigation.navigate('Orders',{ screen: 'Tabs' })}
         icon="arrow-back"
       />
       <ScrollView

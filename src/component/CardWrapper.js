@@ -16,6 +16,7 @@ const CardWrapper = ({
   btnColor,
   stutus,
   cardStyle,
+  cardTitleStyle,
 }) => {
   return button ? (
     <View
@@ -28,7 +29,7 @@ const CardWrapper = ({
         cardStyle,
       ]}
     >
-      <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={2}>
+      <Text style={[cardTitleStyle || styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={1}>
         {title}
       </Text>
       {des && (
@@ -66,11 +67,11 @@ const CardWrapper = ({
       ]}
     >
       {stutus ? (
-        <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={1}>
+        <Text style={[ cardTitleStyle || styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={1}>
           {title}
         </Text>
       ) : (
-        <Text style={[styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={2}>
+        <Text style={[cardTitleStyle || styles.cardTitle, titleColor ? { color: titleColor } : null]} numberOfLines={1}>
           {title}
         </Text>
       )}

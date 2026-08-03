@@ -17,12 +17,12 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { Modal } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ButtonWrapper from '../component/Button';
-import FamilyScreen from './FamilyScreen';
 import { getAddressApi } from '../api/addressApi/getAddressApi';
-
+import { getProfile } from '../api/getProfile';
 const HomeScreen = ({ navigation }) => {
 
   const [location, setLocation] = useState('');
+  const time = new Date().getHours();
 
   const medicine = [
     {
@@ -56,25 +56,26 @@ const HomeScreen = ({ navigation }) => {
       color: '#FDE68A',
       name: 'Wellness',
     },
+    {
+      color: '#FDE68A',
+      name: 'Wellness',
+    },
   ];
 
   const [camModalVisible, setCamModalVisible] = useState(false);
-  const [user, setUser] = useState({});
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const user = await AsyncStorage.getItem('user');
-        setUser(JSON.parse(user));
-        const addressData = await getAddressApi();
-        setLocation(addressData?.[0]?.address_line_1 || 'Not Available');
-        // if (addressData && addressData.length > 0) {
-        //   const firstAddress = addressData[0];
-        //   const formattedLocation = `${firstAddress.address_line_1}, ${firstAddress.city}, ${firstAddress.state}`;
-        //   setLocation(formattedLocation);
-        // } else {
-        //   console.log('No addresses found.');
-        // }
+        const profile = await getProfile();
+        setUsername(profile?.first_name);
+       const selectedAdd= await AsyncStorage.getItem('selectedAddress')
+       console.log('selectedAdd:', selectedAdd);
+         const addressData = await getAddressApi();
+        //  setLocation(addressData?.addresses[0]?.street_address || 'Not Available');
+        setLocation(selectedAdd ? JSON.parse(selectedAdd)?.street_address : 'Not Available');
+        
       } catch (error) {
         console.error('Error fetching addresses:', error);
       }
@@ -134,7 +135,7 @@ const HomeScreen = ({ navigation }) => {
         title={location || 'Not Available'}
         navigation={navigation}
         onPress={() => navigation.navigate('Profile')}
-         lefticon={() => navigation.openDrawer()}
+         lefticon={() => navigation.navigate('AddAddress')}
          icon="location-sharp"
         righticon={true}
       />
@@ -145,7 +146,7 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
       >
         <View style={{ marginTop: 10, marginBottom: 12 ,flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-        <Text style={styles.text}>Good morning, {user.first_name}</Text>
+        <Text style={styles.text}>Good {time < 12 ? 'morning' : time < 18 ? 'afternoon' : 'evening'}, {username}</Text>
 
         <ButtonWrapper
           title="+ Add new order"
@@ -176,8 +177,9 @@ const HomeScreen = ({ navigation }) => {
 
         <CardWrapper
           title="Go WellZy Plus - free express delivery on every order"
+          cardTitleStyle={{ fontSize: 14, fontWeight: '600',color: '#f2efee' }}
           des={false}
-          backgroundColor="#E0F2FE"
+          backgroundColor="#14191c"
           borderColor="#BFD9E8"
         />
 
@@ -191,7 +193,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <Text style={{ fontSize: 18, fontWeight: '600', marginLeft: 12 }}>
-            Your usual
+            Your usuals
           </Text>
           <ButtonWrapper
             title="See all"

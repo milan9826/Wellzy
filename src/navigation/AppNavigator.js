@@ -10,6 +10,7 @@ import ProductDetailScreen from '../screens/ProductDetailScreen';
 import YourOrderScreen from '../screens/YourOrderScreen';
 import CheckoutScreen from '../screens/ChekoutScreen';
 import OrderTracking from '../screens/OrderTracking';
+import AddAdreessScreen from '../screens/AddAdressScreen';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = ({ initialRouteName = 'Login' }) => {
@@ -69,6 +70,12 @@ const AppNavigator = ({ initialRouteName = 'Login' }) => {
       <Stack.Screen
         name="OrderTracking"
         component={OrderTracking}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="AddAddress"
+        component={AddAdreessScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

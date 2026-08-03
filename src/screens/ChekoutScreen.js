@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, Modal, TouchableOpacity } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import Header from '../component/Header';
@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from 'react-native/types_generated/index';
 import ButtonWrapper from '../component/Button';
 import { useCart } from '../context/CartContext';
+import { clearCartApi } from '../api/cartApi/clearCartApi';
 
 
 const CheckoutScreen = ({ route, navigation }) => {
@@ -18,16 +19,22 @@ const CheckoutScreen = ({ route, navigation }) => {
     const subtotal = Number(cartItems?.total || cartItems?.totalAmount);
     const deliveryCharge = selectedDelivery === 'express' ? 159 : 0;
     const totalAmount = subtotal + deliveryCharge;
-    const {setCartItems , fetchCart} = useCart();
+    const {setCartItems , fetchCart,} = useCart();
 
     const [modalVisible, setModalVisible] = useState(false);
-
-    const handleCloseModal = () => {
+    const handleCloseModal = async () => {
         setModalVisible(false);
-        setCartItems([]); // Clear the cart items
-        fetchCart(); // Fetch the updated cart state
-        navigation.navigate('OrderTracking');
-    }
+
+        try {
+            await clearCartApi();
+        } catch (error) {
+            console.log('Failed to clear cart from server:', error);
+        } finally {
+            setCartItems([]);
+            await fetchCart();
+            navigation.replace('OrderTracking');
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -150,7 +157,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                     </View>
                     <View style={styles.summaryDivider} />
                     <View style={styles.totalRow}>
-                        <Text style={styles.totalLabel}>Total Amount</Text>
+                        <Text style={styles.totalLabel}>Total</Text>
                         <Text style={styles.totalAmount}>₹{totalAmount.toFixed(2)}</Text>
                     </View>
                 </View>

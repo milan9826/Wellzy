@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import TextInputWraper from '../component/TextInput';
 import ButtonWrapper from '../component/Button';
-import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { login } from '../api/authApi';
 
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
 import { sendOTP } from '../api/sendOTPApi';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 const LoginScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -144,8 +144,8 @@ const LoginScreen = ({ route }) => {
                  
                 /> */}
 
-                <Text style={{ fontSize: 28, fontWeight: 'bold', color: theme.colors.danger }}>Wellzy</Text>
-                <Text style={{ fontSize: 16, color: theme.colors.logoText }}>YOUR FAMILY WELLNESS SPACE</Text>
+                <Text style={{ fontSize: 28, fontWeight: 'bold', color: theme.colors.button }}>Wellzy</Text>
+                <Text style={{ fontSize: 12, color: theme.colors.logoText }}>YOUR FAMILY WELLNESS SPACE</Text>
               </View>
               <View style={styles.formContainer}>
                   <View style={{ alignItems: 'center', marginBottom: 40 }}>
@@ -176,21 +176,28 @@ const LoginScreen = ({ route }) => {
                   <Text style={{ color: theme.colors.danger, fontSize: 12, marginTop: 4 }}>• We'll send you an OTP to verify</Text>
 
                 </View>
-
                 <ButtonWrapper
                   title="Send OTP"
                   onPress={handleLogin}
                   style={[styles.button, loading && styles.buttonDisabled]}
                   disabled={loading}
+                  icon="arrow-forward-outline"
+                  textStyle={{ fontSize: 16, fontWeight: '600', color: '#fff' }}
                 />
+                 
+              
+                </View>
 
                 {/* <ButtonWrapper
                   title="Register"
                   onPress={() => navigation.navigate('Register')}
                   style={styles.button}
                 /> */}
+
+
+               
               </View>
-            </View>
+               
           )}
         </ScrollView>
       </KeyboardAvoidingView>
@@ -268,7 +275,7 @@ code: {
 
   },
   button: {
-    marginVertical: 10,
+    marginVertical: 12,
     backgroundColor: theme.colors.button,
   },
   buttonDisabled: {
@@ -306,5 +313,6 @@ code: {
     color: '#374151',
     fontWeight: '500',
   },
+ 
 });
 export default LoginScreen;

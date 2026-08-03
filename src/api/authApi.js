@@ -46,6 +46,7 @@ export const login = async data => {
   return response.data;
 };
 
+
 export const logout = async () => {
   try {
     const token = await AsyncStorage.getItem('token');

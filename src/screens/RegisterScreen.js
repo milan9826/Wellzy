@@ -46,8 +46,13 @@ const RegisterScreen = ({ route }) => {
   const handleRegister = async () => {
     let isValid = true;
 
+    const nameRegex = /^[A-Za-z]+$/;
+
     if (firstname.trim() === '') {
       setFirstNameError('Please enter your first name');
+      isValid = false;
+    } else if (!nameRegex.test(firstname.trim())) {
+      setFirstNameError('Please enter a valid first name');
       isValid = false;
     } else {
       setFirstNameError('');
@@ -55,6 +60,9 @@ const RegisterScreen = ({ route }) => {
 
     if (lastname.trim() === '') {
       setLastNameError('Please enter your last name');
+      isValid = false;
+    } else if (!nameRegex.test(lastname.trim())) {
+      setLastNameError('Please enter a valid last name');
       isValid = false;
     } else {
       setLastNameError('');
@@ -126,7 +134,7 @@ const RegisterScreen = ({ route }) => {
           await AsyncStorage.setItem('name', response.user.name || firstname);
           await AsyncStorage.setItem('user', JSON.stringify(response.user));
         }
-        navigation.navigate('Drawer', {
+        navigation.replace('Drawer', {
           screen: 'Tabs',
           params: {
             screen: 'Home',

@@ -23,7 +23,7 @@ const OrderScreen = ({ navigation }) => {
   const [productCategories, setProductCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState('all');
 
-  console.log("Selected category ID:", selectedCategoryId);
+  // console.log("Selected category ID:", selectedCategoryId);
 
   const totalItems = cartItems?.length > 0 
     ? cartItems.length 
@@ -35,9 +35,9 @@ const OrderScreen = ({ navigation }) => {
         setLoading(true);
         const getProducts = await getProduct();
 
-        console.log('Response data:', getProducts);
-
-        setData(getProducts);
+        // console.log('Response data:', getProducts);
+ 
+       setData(getProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
         
@@ -54,7 +54,7 @@ const OrderScreen = ({ navigation }) => {
       const categories = await getAllCategories();
      
       setProductCategories(categories);
-      console.log('Fetched categories:', categories);
+      // console.log('Fetched categories:', categories);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -65,34 +65,32 @@ const OrderScreen = ({ navigation }) => {
   }, []);
 
   const handleCartPress = () => {
-    navigation.navigate('Cart');
+    navigation.replace('Cart');
   };
 
   const filteredProducts = data.filter(item => {
-  const matchesSearch =
-    searchText === '' ||
-    item.name.toLowerCase().includes(searchText.toLowerCase());
+  const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase().trim());
 
   const matchesCategory =
     selectedCategoryId === 'all' ||
     item.category_id == selectedCategoryId;
-    console.log('Filtering product:', item.name, 'Category ID:', item.category_id, 'Selected Category ID:', selectedCategoryId, 'Matches Category:', matchesCategory);
+    // console.log('Filtering product:', item.name, 'Category ID:', item.category_id, 'Selected Category ID:', selectedCategoryId, 'Matches Category:', matchesCategory);
 
   return matchesSearch && matchesCategory;
 });
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       {isInDrawer ? (
         <>
           <View style={{ position: 'relative' }}>
             <Header
-              title="Orders"
+              title="Products"
               navigation={navigation}
               onPress={() => {}}
-              // icon="menu"
-              // lefticon={() => navigation.openDrawer()}
+               icon="arrow-back"
+               lefticon={() => navigation.goBack()}
               // righticon={true}
               // righticonname="add-circle-outline"
               secondBtn={true}
@@ -115,7 +113,7 @@ const OrderScreen = ({ navigation }) => {
         <>
           <View style={{ position: 'relative' }}>
             <Header
-              title="Orders"
+              title="Products"
               navigation={navigation}
               icon="arrow-back"
               onPress={() => navigation.navigate('AddUpdate')}
@@ -181,6 +179,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor:'#FFFFFF',
   },
   columnWrapper: {
     paddingHorizontal: 10,

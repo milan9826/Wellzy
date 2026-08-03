@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
+import { getProfile } from '../api/getProfile';
 
 const Header = ({
   title,
@@ -19,14 +20,15 @@ const Header = ({
   textValue,
   titleStyle,
 }) => {
-  const [name, setName] = React.useState('');
+  const [name, setName] = useState('');
 
   useEffect(() => {
     const fetchName = async () => {
       try {
-        const storedName = await AsyncStorage.getItem('name');
+        const storedName = await getProfile();
+        console.log('storedName in header:', storedName);
         if (storedName) {
-          setName(storedName);
+          setName(storedName.first_name);
         }
       } catch (error) {
         console.log('Error retrieving name from AsyncStorage:', error);
@@ -48,7 +50,7 @@ const Header = ({
       <View style={styles.headerActions}>
         {secondBtn ? (
           <TouchableOpacity style={styles.seconDBtn} onPress={secondBtnPress}>
-            <Ionicons name={secondBtnicon} size={24} color="#fff" />
+              <Text style={{fontSize:24,alignSelf:"center"}}>🛒</Text> 
             {secondBtnBadge > 0 && (
               <View style={styles.cartBadge}>
                 <Text style={styles.cartBadgeText}>{secondBtnBadge}</Text>
@@ -108,16 +110,16 @@ const styles = StyleSheet.create({
   profileButton: {
     width: 36,
     height: 36,
-    borderRadius: 15,
-    backgroundColor: '#007bff',
+    borderRadius: 18,
+    backgroundColor: '#0c0d0e',
     justifyContent: 'center',
     alignItems: 'center',
   },
   seconDBtn: {
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
-    backgroundColor: '#007bff',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#dedfe0',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -151,9 +153,9 @@ const styles = StyleSheet.create({
   profileButtonText: {
     color: '#fff',
     fontSize: 16,
-    marginLeft: 3,
     fontWeight: 'bold',
-    alignSelf:"center"
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   headerTextValue: {
     color: '#fff',

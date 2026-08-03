@@ -137,12 +137,12 @@ const AddUpdateScreen = ({ navigation, route }) => {
     }
     if (hasError) return;
 
-    const data=new FormData();
-    data.append('name', name.trim());
-    data.append('description', description.trim());
-    data.append('price', price);
+    // const data=new FormData();
+    // data.append('name', name.trim());
+    // data.append('description', description.trim());
+    // data.append('price', price);
 
-    await createProductApi(data, image);
+    // await createProductApi(data, image);
 
     const newItem = {
       id: Date.now().toString(),
