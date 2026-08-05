@@ -19,6 +19,8 @@ import { getProfile } from '../api/getProfile';
 import { updateProfile } from '../api/updateProfileApi';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ConfirmModal from '../component/ConfirmModal';
 
 
 const StoreScreen = ({ navigation }) => {
@@ -28,6 +30,7 @@ const StoreScreen = ({ navigation }) => {
   const [lastname, setLastName] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   // const [isNewImage, setIsNewImage] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [camModalVisible, setCamModalVisible] = useState(false);
   const [user,setUser] = useState({});
   const [usernameError, setUsernameError] = useState('');
@@ -36,6 +39,9 @@ const StoreScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [profileConfirmMessage, setProfileConfirmMessage] = useState('');
+  const [loadingLogout, setLoadingLogout] = useState(false);
 
   const validateInputs = () => {
     let isValid = true;
@@ -173,13 +179,16 @@ const StoreScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await updateProfile(data);
+      setProfileConfirmMessage(
+        response?.message || 'Profile updated successfully!',
+      );
+      setVisible(true);
       // if (isNewImage && profileImage) {
       //   await updateImage(profileImage);
       //   setIsNewImage(false);
       // }
-    
-      alert(response?.message || 'Profile updated successfully!');
-      setEdit(false);
+      // alert(response?.message || 'Profile updated successfully!');
+      // setEdit(false);
     } catch (error) {
       throw error;
     } finally {
@@ -191,19 +200,43 @@ const StoreScreen = ({ navigation }) => {
   const isInDrawer = parent === 'drawer';
 
 
+  const openLogoutConfirm = () => {
+    setConfirmVisible(true);
+  };
+
+  const closeLogoutConfirm = () => {
+    if (!loadingLogout) {
+      setConfirmVisible(false);
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      
+      
+       await logout();
+    } catch (error) {
+      console.error('Error occurred while logging out:', error);
+    } finally {
+      await AsyncStorage.removeMany(['flag', 'password', 'token']);
+      setConfirmVisible(false);
+      setLoadingLogout(false);
+      navigation.replace('Login');
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <SafeAreaView style={{ flex: 1 }}>
         {isInDrawer ? (
           <Header
-            title="My Retailer"
+            title="My Profile"
             navigation={navigation}
              icon="arrow-back"
              lefticon={() => navigation.goBack()}
           />
         ) : (
           <Header
-            title="My Retailer"
+            title="My Profie"
             navigation={navigation}
             icon="arrow-back"
             lefticon={() => navigation.goBack()}
@@ -214,7 +247,6 @@ const StoreScreen = ({ navigation }) => {
             contentContainerStyle={{
               flexGrow: 1,
               alignItems: 'center',
-              justifyContent: 'center',
               padding: 16,
             }}
           >
@@ -374,9 +406,69 @@ const StoreScreen = ({ navigation }) => {
                     </View>
                     <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" />
                   </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.actionCard}
+                    onPress={openLogoutConfirm}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.actionLeft}>
+                      <View style={styles.actionIconContainer}>
+                        <Ionicons name="exit-outline" size={22} color="#1C2FDB" />
+                      </View>
+                      <Text style={styles.actionTitle}>LogOut</Text>
+                    </View>
+                    <Ionicons name="chevron-forward-outline" size={20} color="#9CA3AF" />
+                  </TouchableOpacity>
+
                 </View>
               </View>
             )}
+
+            <ConfirmModal
+              visible={visible}
+              message={profileConfirmMessage}
+              onClose={() => {
+                setVisible(false);
+                setEdit(false);
+              }}
+              btn1Title="Ok"
+            />
+
+             {confirmVisible && (
+        <View
+          style={[StyleSheet.absoluteFill, { zIndex: 1000, elevation: 10 }]}
+        >
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>Log out?</Text>
+              <Text style={styles.modalMessage}>
+                Are you sure you want to log out?
+              </Text>
+
+              {loadingLogout ? (
+                <View style={styles.loadingRow}>
+                  <ActivityIndicator size="large" color="#DC2626" />
+                  <Text style={styles.loadingText}>Logging out...</Text>
+                </View>
+              ) : (
+                <View style={styles.buttonRow}>
+                  <View style={styles.buttonSpacing}>
+                    <ButtonWrapper
+                      title="Log Out"
+                      onPress={handleLogout}
+                      style={styles.modalButton}
+                    />
+                  </View>
+                  <View style={styles.buttonSpacing}>
+                    <ButtonWrapper title="No" onPress={closeLogoutConfirm} />
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+      )}
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -472,8 +564,9 @@ const styles = StyleSheet.create({
   avatarInitial: {
     color: '#FFFFFF',
     fontSize: 28,
-    marginTop: 12,
-    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingTop: 14,
+    
   },
   editPencilBadge: {
     position: 'absolute',
@@ -692,6 +785,32 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 4,
   },
+   logoutButton: {
+    backgroundColor: '#DC2626',
+    marginTop: 330,
+    borderRadius: 12,
+  },
+  logoutButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#DC2626',
+    minHeight: 48,
+  },
+  loadingRow: {
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+  },
+  loadingText: {
+    fontSize: 15,
+    color: '#DC2626',
+    fontWeight: '600',
+  },
+
 });
 
 export default StoreScreen;

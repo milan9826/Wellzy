@@ -5,8 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import FamilyScreen from '../screens/FamilyScreen';
 import OrderScreen from '../screens/OrderScreen';
 import BrowseScreen from '../screens/BrowseScreen';
-import StoreScreen from '../screens/StoreScreen';
-
+import CartScreen from '../screens/CartScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -51,7 +50,7 @@ const BottomTabNavigator = () => {
         component={FamilyScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <Ionicons name="people-outline" size={size} color={color} />
           ),
         }}
       />
@@ -66,11 +65,11 @@ const BottomTabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Profile"
-        component={StoreScreen}
+        name="Cart"
+        component={CartScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront" size={size} color={color} />
+            <Ionicons name="cart-outline" size={size} color={color} />
           ),
         }}
       />

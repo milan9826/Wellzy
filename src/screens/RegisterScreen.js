@@ -8,6 +8,7 @@ import {
   Modal,
   StatusBar,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputWraper from '../component/TextInput';
@@ -47,8 +48,11 @@ const RegisterScreen = ({ route }) => {
     let isValid = true;
 
     const nameRegex = /^[A-Za-z]+$/;
-
-    if (firstname.trim() === '') {
+    if(/[!@#$%^&*(),.?":{}|<>_\-\\[\]\/+=;'`~]/.test(firstname) || /[0-9]/.test(firstname)) {
+      setFirstNameError('Please enter a valid first name without special characters or numbers');
+      isValid = false;
+    }
+     else if (firstname.trim() === '') {
       setFirstNameError('Please enter your first name');
       isValid = false;
     } else if (!nameRegex.test(firstname.trim())) {
@@ -58,7 +62,11 @@ const RegisterScreen = ({ route }) => {
       setFirstNameError('');
     }
 
-    if (lastname.trim() === '') {
+     if(/[!@#$%^&*(),.?":{}|<>_\-\\[\]\/+=;'`~]/.test(lastname) || /[0-9]/.test(lastname)) {
+      setFirstNameError('Please enter a valid first name without special characters or numbers');
+      isValid = false;
+    }
+    else if(lastname.trim() === '') {
       setLastNameError('Please enter your last name');
       isValid = false;
     } else if (!nameRegex.test(lastname.trim())) {
@@ -68,35 +76,19 @@ const RegisterScreen = ({ route }) => {
       setLastNameError('');
     }
 
-    // if (number.trim() === '') {
-    //   setNumberError('Please enter your number');
-    //   isValid = false;
-    // } else if (!/^[0-9]{10}$/.test(number.trim())) {
-    //   setNumberError('Please enter a valid 10-digit number');
-    //   isValid = false;
-    // } else {
-    //   setNumberError('');
-    // }
-
-    // if (email.trim() === '') {
-    //   setEmailError('Please enter your email');
-    //   isValid = false;
-    // } else if (
-    //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())
-    // ) {
-    //   setEmailError('Please enter a valid email address');
-    //   isValid = false;
-    // } else {
-    //   setEmailError('');
-    // }
+    
 
     if (weight.trim() === '') {
       setWeightError('Please enter your body weight');
       isValid = false;
-    } else if (!/^[0-9]+$/.test(weight.trim())) {
+    } else if (!/^\d+$/.test(weight.trim())) {
       setWeightError('Please enter a valid body weight');
       isValid = false;
-    } else {
+    } else if(weight.trim() < 1 || weight.trim() > 999) {
+      setWeightError('Please enter a valid body weight (1-999 kg)');
+      isValid = false;
+    }
+     else {
       setWeightError('');
     }
 
@@ -106,7 +98,12 @@ const RegisterScreen = ({ route }) => {
     } else if (!/^[0-9]+$/.test(age.trim())) {
       setAgeError('Please enter a valid age');
       isValid = false;
-    } else {
+    }else if(age.trim() < 1 || age.trim() > 100) {
+      setAgeError('Please enter a valid age (1-100)');
+      isValid = false;
+
+    }
+     else {
       setAgeError('');
     }
 
@@ -152,10 +149,12 @@ const RegisterScreen = ({ route }) => {
     <View style={styles.mainContainer}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={'padding'}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
+
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Tell us about yourself</Text>
             <Text style={styles.subtitle}>
@@ -281,6 +280,7 @@ const RegisterScreen = ({ route }) => {
             />
           </View>
         </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
 
       <Modal transparent animationType="fade" visible={loading}>

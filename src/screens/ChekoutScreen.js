@@ -38,7 +38,7 @@ const CheckoutScreen = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title="Checkout" lefticon={() => navigation.goBack()} icon="arrow-back" />
+            <Header title="Checkout" navigation={navigation} lefticon={() => navigation.replace('Cart')} icon="arrow-back" />
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                 <Text style={styles.labelStyle}>Delivery</Text>
 

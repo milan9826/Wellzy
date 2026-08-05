@@ -19,6 +19,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
 import { sendOTP } from '../api/sendOTPApi';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import Plus from '../utils/icons/plus.svg';
+import Flag from '../utils/icons/flag.svg';
 
 const LoginScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -30,25 +32,29 @@ const LoginScreen = ({ route }) => {
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [lloginCheck, setLoginCheck] = useState(false);
+  const [loginCheck, setLoginCheck] = useState(false);
 
   useEffect(() => {
-    setLoginCheck(true);
     const checkToken = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        const name = await AsyncStorage.getItem('name');
+      setLoginCheck(true);
+
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          const name = await AsyncStorage.getItem('name');
+          navigation.replace('Drawer', {
+            screen: 'Tabs',
+            params: {
+              screen: 'Home',
+              params: { name },
+            },
+          });
+        }
+      } finally {
         setLoginCheck(false);
-        navigation.replace('Drawer', {
-          screen: 'Tabs',
-          params: {
-            screen: 'Home',
-            params: { name },
-          },
-        });
       }
     };
-    setLoginCheck(false);
+
     checkToken();
   }, [navigation]);
 
@@ -69,40 +75,6 @@ const LoginScreen = ({ route }) => {
     }
 
 
-  //   try {
-  //     setLoading(true);
-  //     const name = await AsyncStorage.getItem('name');
-
-  //     const data = {
-  //       platform: 1,
-  //       email: usernumber,
-  //       password: userpassword,
-  //     };
-
-  //     await login(data);
-  //     await AsyncStorage.setItem('flag', 'true');
-  //     setNumberError('');
-
-  //     navigation.replace('Drawer', {
-  //       screen: 'Tabs',
-  //       params: {
-  //         screen: 'Home',
-  //         params: { name },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error during login:', error);
-  //     setNumberError('Invalid number or password');
-  //     // setPasswordError('Invalid email or password');
-  //   } finally {
-  
-
-
-  //   }
-    //   }
-
-  //     setLoading(false);
-  
       
 
     try {
@@ -130,9 +102,10 @@ const LoginScreen = ({ route }) => {
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
-          {lloginCheck ? (
+
+          {loginCheck ? (
             <View style={styles.container}>
-              <ActivityIndicator size="large" color="#141618" />
+              <ActivityIndicator size="large" color="#141618" animating={true}/>
             </View>
           ) : (
             <View style={styles.container}>
@@ -143,7 +116,9 @@ const LoginScreen = ({ route }) => {
                   color="#141618"
                  
                 /> */}
-
+                <View style={{ width: 80, height: 80, borderRadius: 30, backgroundColor: theme.colors.button, justifyContent: 'center', alignItems: 'center' }}>
+                <Plus width={100} height={100} fill="#FFFFFF" style={{alignSelf:"center",marginTop:20}} />
+</View>
                 <Text style={{ fontSize: 28, fontWeight: 'bold', color: theme.colors.button }}>Wellzy</Text>
                 <Text style={{ fontSize: 12, color: theme.colors.logoText }}>YOUR FAMILY WELLNESS SPACE</Text>
               </View>
@@ -158,11 +133,12 @@ const LoginScreen = ({ route }) => {
                   <Text style={styles.label}>MOBILE NUMBER</Text>
                   <View style={styles.countryCodeContainer}>
                     <View style={styles.ccontainer}>
-                    <Text style={styles.flag} >IN</Text>
+                    {/* <Text style={styles.flag} >IN</Text> */}
+                    <Flag width={18} height={18}  />
                     <Text style={styles.countryCode}>+91</Text>
                     </View>
                     <TextInputWraper
-                    placeholder="Enter number Here.."
+                    placeholder="Enter mobile number"
                     style={styles.input}
                     value={usernumber}
                     onChangeText={setUserNumber}
@@ -173,7 +149,6 @@ const LoginScreen = ({ route }) => {
                   </View>
                   <Text style={{ color: theme.colors.error, fontSize: 12, marginTop: 4 }}>{numberError}</Text>
                   
-                  <Text style={{ color: theme.colors.danger, fontSize: 12, marginTop: 4 }}>• We'll send you an OTP to verify</Text>
 
                 </View>
                 <ButtonWrapper

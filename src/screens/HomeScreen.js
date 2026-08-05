@@ -9,6 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import Header from '../component/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CardWrapper from '../component/CardWrapper';
@@ -19,11 +20,17 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import ButtonWrapper from '../component/Button';
 import { getAddressApi } from '../api/addressApi/getAddressApi';
 import { getProfile } from '../api/getProfile';
+import { useAddress } from '../context/AddressContext';
 const HomeScreen = ({ navigation }) => {
 
   const [location, setLocation] = useState('');
-  const time = new Date().getHours();
+  const time = new Date().getHours()%2;
+  console.log('time:', time);
+  const { address, fetchAddress } = useAddress();
 
+  const isFocused = useIsFocused();
+
+  console.log('address:', address);
   const medicine = [
     {
       name: 'Metformin 500',
@@ -70,19 +77,29 @@ const HomeScreen = ({ navigation }) => {
       try {
         const profile = await getProfile();
         setUsername(profile?.first_name);
-       const selectedAdd= await AsyncStorage.getItem('selectedAddress')
-       console.log('selectedAdd:', selectedAdd);
-         const addressData = await getAddressApi();
-        //  setLocation(addressData?.addresses[0]?.street_address || 'Not Available');
-        setLocation(selectedAdd ? JSON.parse(selectedAdd)?.street_address : 'Not Available');
-        
+
+        const selectedAdd = await AsyncStorage.getItem('selectedAddress');
+        if (selectedAdd) {
+          const parsed = JSON.parse(selectedAdd);
+          setLocation(parsed?.city +","+parsed?.state|| 'Not Available');
+          return;
+        }
+
+        // Derive from address object returned by API
+        // if (address) {
+        //   // address may be an object with `addresses` array
+        //   const derived = address.addresses && address.addresses.length ? address.addresses[0].street_address : null;
+        //   setLocation(derived || 'Not Available');
+        // } else {
+        //   setLocation('Not Available');
+        // }
       } catch (error) {
         console.error('Error fetching addresses:', error);
       }
     };
 
-    fetchLocation();
-  }, []);
+    if (isFocused) fetchLocation();
+  }, [address, isFocused]);
 
 
   const handleCamAndImagePicker = () => {
@@ -149,8 +166,8 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.text}>Good {time < 12 ? 'morning' : time < 18 ? 'afternoon' : 'evening'}, {username}</Text>
 
         <ButtonWrapper
-          title="+ Add new order"
-          onPress={() => ('')}  
+          title="+ New Order"
+          onPress={() => navigation.navigate('Drawer',{screen:'Tabs',params:{screen:'Orders'}})}  
           style={{ backgroundColor: '#7a2d09', paddingVertical: 10, paddingHorizontal: 10,marginTop:10, borderRadius: 8 }}
           textStyle={{ color: '#ede7e5', fontSize: 14, fontWeight: '600' }}
         />
@@ -392,7 +409,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
-    paddingHorizontal: 4,
     gap: 12,
   },
   browseListContent: {

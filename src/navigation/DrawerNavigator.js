@@ -48,7 +48,7 @@ const DrawerNavigator = () => {
         options={{ headerShown: false }}
       />
       <Drawer.Screen
-        name="Store"
+        name="Profile"
         component={StoreScreen}
         options={{ headerShown: false }}
       />

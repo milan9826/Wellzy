@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { TextInput, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 
-const TextInputWraper = ({
+const TextInputWraper = forwardRef(({
   value,
   onChangeText,
   placeholder,
@@ -14,10 +14,11 @@ const TextInputWraper = ({
   errorStyle,
   containerStyle,
   ...rest
-}) => {
+}, ref) => {
   return (
     <View style={[styles.fieldContainer, containerStyle]}>
       <TextInput
+        ref={ref}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -38,7 +39,7 @@ const TextInputWraper = ({
       {error ? <Text style={[styles.errorText, errorStyle]}>{error}</Text> : null}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   fieldContainer: {

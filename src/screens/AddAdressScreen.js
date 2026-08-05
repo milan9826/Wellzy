@@ -9,9 +9,11 @@ import Header from '../component/Header';
 import { addAdressApi } from '../api/addressApi/addAdressApi';
 import { getAddressApi } from '../api/addressApi/getAddressApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAddress } from '../context/AddressContext';
 
 
 const AddAdreessScreen = ({ navigation }) => {
+    const { fetchAddress } = useAddress();
 
     const TYPE_OPTIONS = ['Home', 'Work', 'Other'];
 
@@ -72,6 +74,9 @@ const AddAdreessScreen = ({ navigation }) => {
         if (!state.trim()) {
             setStateError('State is required');
             hasError = true;
+        } else if (!/^[A-Za-z]+$/.test(state.trim())) {
+            setStateError('Please enter a valid state');
+            hasError = true;
         } else {
             setStateError('');
         }
@@ -79,7 +84,13 @@ const AddAdreessScreen = ({ navigation }) => {
         if (!postalCode.trim()) {
             setPostalCodeError('Postal Code is required');
             hasError = true;
-        } else {
+        }
+        else if (!/^[1-9][0-9]{5}$/.test(postalCode.trim())) {
+            setPostalCodeError('Please enter a valid 6-digit postal code');
+            hasError = true;
+
+        }
+        else {
             setPostalCodeError('');
         }
 
@@ -96,7 +107,9 @@ const AddAdreessScreen = ({ navigation }) => {
             try {
                 const response = await addAdressApi(addressData);
                 console.log('Address added successfully:', response);
+                await fetchAddress();
                 navigation.goBack();
+
             } catch (error) {
                 console.error('Error adding address:', error);
             }
@@ -121,8 +134,8 @@ const AddAdreessScreen = ({ navigation }) => {
 
     const handleSelectAddress = async (address) => {
         await AsyncStorage.setItem('selectedAddress', JSON.stringify(address));
-                setSelectedAddressId(address.id);
-                navigation.goBack();
+        setSelectedAddressId(address.id);
+        navigation.goBack();
 
     }
 
@@ -237,11 +250,16 @@ const AddAdreessScreen = ({ navigation }) => {
                                         );
                                     })}
                                 </View>
+
                             </View>
+
+
+                            
+                           
 
                             <ButtonWrapper
                                 title="Update Address"
-                                onPress={() => {}}
+                                onPress={() => { }}
                                 style={{ backgroundColor: theme.colors.button, marginTop: 12 }}
                             />
                         </View>) :
@@ -352,29 +370,29 @@ const AddAdreessScreen = ({ navigation }) => {
                             }} />
 
                         {allAddress.map((address, index) => (
-                            <TouchableOpacity onPress={()=>{handleSelectAddress(address)}} key={index}>
-                                
-                            <View key={index} style={selectedAddressId === address.id ? styles.selectedAddressCard : styles.addressCard}>
-                                
-                                <View style={styles.addressIconWrapper}>
-                                    <Ionicons name="location-outline" size={22} color={theme.colors.button} />
-                                </View>
+                            <TouchableOpacity onPress={() => { handleSelectAddress(address) }} key={index}>
 
-                                <View style={styles.addressDetails}>
-                                    <View style={styles.addressHeader}>
-                                        <Text style={styles.addressType}>
-                                            {address.address_type ? address.address_type.toUpperCase()  : 'Address'}
-                                        </Text>
-                                        <TouchableOpacity activeOpacity={0.8} onPress={() => handleEditAddress(address)}>
-                                            <Ionicons name="pencil" size={18} color={theme.colors.button} />
-                                        </TouchableOpacity>
+                                <View key={index} style={selectedAddressId === address.id ? styles.selectedAddressCard : styles.addressCard}>
+
+                                    <View style={styles.addressIconWrapper}>
+                                        <Ionicons name="location-outline" size={22} color={theme.colors.button} />
                                     </View>
 
-                                    <Text style={styles.addressText}>{address.street_address}</Text>
-                                    <Text style={styles.addressText}>{address.landmark}</Text>
-                                    <Text style={styles.addressText}>{`${address.city}, ${address.state} - ${address.postal_code}`}</Text>
+                                    <View style={styles.addressDetails}>
+                                        <View style={styles.addressHeader}>
+                                            <Text style={styles.addressType}>
+                                                {address.address_type ? address.address_type.toUpperCase() : 'Address'}
+                                            </Text>
+                                            <TouchableOpacity activeOpacity={0.8} onPress={() => handleEditAddress(address)}>
+                                                <Ionicons name="pencil" size={18} color={theme.colors.button} />
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <Text style={styles.addressText}>{address.street_address}</Text>
+                                        <Text style={styles.addressText}>{address.landmark}</Text>
+                                        <Text style={styles.addressText}>{`${address.city}, ${address.state} - ${address.postal_code}`}</Text>
+                                    </View>
                                 </View>
-                            </View>
                             </TouchableOpacity>
                         ))}
                     </>
@@ -452,7 +470,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F9FAFB',
         borderRadius: 12,
         marginBottom: 16
-        
+
 
     },
     addressCard: {
@@ -464,8 +482,8 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderWidth: 1,
         borderColor: '#E5E7EB',
-        marginTop:12,
-       
+        marginTop: 12,
+
     },
     selectedAddressCard: {
         flexDirection: 'row',
@@ -476,7 +494,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderWidth: 1,
         borderColor: theme.colors.button,
-        marginTop:12,
+        marginTop: 12,
     },
     addressIconWrapper: {
         width: 42,

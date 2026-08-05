@@ -7,45 +7,52 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../theme';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
-  // const [otp, setOtp] = useState(['', '', '', '', ]);
-  const [otp, setOtp] = useState('');
-  const [otpError, setOtpError] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '','','' ]);
+  // const [otp, setOtp] = useState('');
+  // const [otpError, setOtpError] = useState('');
   const usernumber = route.params.usernumber;
   const [timer, setTimer] = useState(30);
 
-  const inputRefs=[
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null)
-  ]
+  const inputRefs = useRef([]);
 
   const options = [
   { id: '1', label: 'Male' },
   { id: '2', label: 'Female' },
   { id: '3', label: 'Other' },
 ];
+
+const handleInputChange = (index,text) => {
+  console.log('Input changed at index:', index, 'New value:', text);
+  const newOtp = [...otp];
+  const digit = text.replace(/\D/g, '').slice(-1);
+  newOtp[index] = digit;
+  const nextIndex = index + 1;
+  if (digit && nextIndex < newOtp.length) {
+    inputRefs.current[nextIndex]?.focus();
+  }
+  setOtp(newOtp);
+}
  const handleVerifyOTP = async  () => {
             const isNumberValid = /^[0-9]{6}$/.test(otp);
 
-    if (otp === '') {
-      setOtpError('Please enter your OTP');
-      return;
-    }
-    else if (!isNumberValid) {
-        setOtpError('Please enter a valid 6-digit OTP');
-        return;
-    }
-    else {
-      setOtpError('');
-    }
+    // if (otp === '') {
+    //   setOtpError('Please enter your OTP');
+    //   return;
+    // }
+    // else if (!isNumberValid) {
+    //     setOtpError('Please enter a valid 6-digit OTP');
+    //     return;
+    // }
+    // else {
+    //   setOtpError('');
+    // }
 
     try {
       const data = {
         mobile_number:route.params.usernumber, 
-        otp_code: otp
+        otp_code: otp.join(''),
       };
-
+      console.log('Data sent for OTP verification:', data);
       const response=await verifyOTP(data);
 
       
@@ -67,7 +74,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
         } catch (error) {
       console.error('Error verifying OTP:', error);
-      setOtpError('Failed to verify OTP. Please try again.');
+      // setOtpError('Failed to verify OTP. Please try again.');
     }
 }
 
@@ -96,7 +103,7 @@ const handleResendOtp = async () => {
       otp_type: 'LOGIN',
     };
     await sendOTP(data);
-    setTimer(5);
+    setTimer(30);
   } catch (error) {
     console.error('Error resending OTP:', error);
     setOtpError('Failed to resend OTP. Please try again.');
@@ -110,37 +117,31 @@ return (
   <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
   <View style={styles.inputGroup}>
-    {/* {otp.map((digit, index) => (
-      <TextInputWraper
-        key={index}
-        value={digit}
-        onChangeText={(text) => {
-          const newOtp = [...otp];
-          newOtp[index] = text;
-          setOtp(newOtp);
-        }}
-        onKeyPress={({ nativeEvent }) => {
-            if (
-              nativeEvent.key === 'Backspace' &&
-              !value &&
-              index > 0
-            ) {
-              inputRefs.current[index - 1]?.focus();
-            }
-          }}
-        ref={inputRefs[index]}
-        maxLength={1}
-        style={styles.input}
-        containerStyle={{ width: 'auto' }}
-        keyboardType="numeric"
-      />
-    ))} */}
+  {otp.map((digit, index) => (
     <TextInputWraper
-        value={otp}
-        onChangeText={setOtp}
-        placeholder="Enter OTP"
-        keyboardType="numeric"
-      />
+      key={index}
+      value={digit}
+      onChangeText={text => handleInputChange(index,text)}
+      
+      onKeyPress={({ nativeEvent }) => {
+        if (
+          nativeEvent.key === 'Backspace' &&
+          !digit &&
+          index > 0
+        ) {
+          inputRefs.current[index - 1]?.focus();
+        }
+      }}
+      ref={(ref) => {
+        inputRefs.current[index] = ref;
+      }}
+      maxLength={1}
+      style={styles.input}
+      containerStyle={{ width: 'auto' }}
+      keyboardType="numeric"
+    />
+  ))}
+   
   </View>
 
   <ButtonWrapper
@@ -197,6 +198,7 @@ const styles=StyleSheet.create({
       fontWeight: 'bold',
       color: '#000',
       backgroundColor: '#fff',
+      paddingHorizontal: 2,
   },
   button: {
     marginVertical: 10,

@@ -135,7 +135,7 @@ const CartScreen = ({ navigation,route }) => {
       alert('Your cart is empty. Please add items to proceed to checkout.');
       return;
     }
-    navigation.navigate('Checkout', { cartItems: reorderData ? reorderData : { cart, total } });
+    navigation.replace('Checkout', { cartItems: reorderData ? reorderData : { cart, total } });
   };
 
   return (
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: '#111827',
-    marginLeft: 98,
+    paddingHorizontal: 92,
   },
   quantityText: {
     color: '#1F2937',
